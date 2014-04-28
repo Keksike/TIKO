@@ -38,6 +38,7 @@ CREATE TABLE tehtavalista (
 );
 
 CREATE TABLE kuuluu (
+	tehtava INT,
 	tehtava_id INT references tehtava(id),
 	tehtavalista_id INT references tehtavalista(id)
 );
