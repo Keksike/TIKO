@@ -1,7 +1,7 @@
 import java.sql.*;
-import java.util.scanner;
+import java.util.Scanner;
 
-public class TIKO{
+public class Tiko {
 	private static final String AJURI = "org.postgresql.Driver";
 	private static final String PROTOKOLLA = "jdbc:postgresql:";
 	private static final String PALVELIN = "dbstud.sis.uta.fi";
@@ -29,16 +29,16 @@ public class TIKO{
 
 			//käytetään tarkistamaan löytyykö annettu käyttäjätunnus (id) tietokannasta
 			final String tunnusTarkistus = "SELECT count(*) FROM kayttaja WHERE id = ?";
-			final PreparedStatement tunnusTarkistusPS = conn.prepareStatement(tunnusTarkistus);
+			final PreparedStatement tunnusTarkistusPS = con.prepareStatement(tunnusTarkistus);
 
 			//käytetään tarkistamaan käyttäjän oikeudet. opiskelija (1), opettaja(2) vai ylläpitäjä(3)
 			final String oikeudetTarkistus = "SELECT oikeudet FROM kayttaja WHERE id = ?";
-			final PreparedStatement oikeudetTarkistusPS = conn.prepareStatement(oikeudetTarkistus);
+			final PreparedStatement oikeudetTarkistusPS = con.prepareStatement(oikeudetTarkistus);
 
 
 			while(!kayttajatunnusOK){
 				System.out.println("Käyttäjätunnus:");
-				kayttajatunnus = In.readInt();
+				kayttajatunnus = sc.nextInt();
 
 				//asetetaan annettu käyttäjätunnus PS:ään
 				tunnusTarkistusPS.setInt(1, kayttajatunnus);
@@ -66,7 +66,7 @@ public class TIKO{
 							System.out.println("Olet opiskelija. Mikäli haluat nähdä tehtävälistan, kirjoita 1. Mikäli haluat suorittaa tehtävälistan, kirjoita 2.");
 							System.out.println("Valinta:");
 
-							int valinta = In.readInt();
+							int valinta = sc.nextInt();
 
 							if(valinta == 1){
 								valintaOK = true;
