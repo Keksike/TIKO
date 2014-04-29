@@ -12,7 +12,7 @@ Ohje:
 import java.sql.*;
 import java.util.Scanner;
 
-public class Opiskelija.java {
+public class Opiskelija {
 
       // tietokannan ja käyttäjän tiedot
 
@@ -27,14 +27,14 @@ public class Opiskelija.java {
     //Haetaan tehtavalista
     public ResultSet haeTehtLista(int listaNro){
 
-        ResultSet rs; // Kyselyn tulokset
+        ResultSet rs = null; // Kyselyn tulokset
 
         // Vaihe 1: tietokanta-ajurin lataaminen
         try {
             Class.forName(AJURI);
         } catch (ClassNotFoundException poikkeus) {
             System.out.println("Ajurin lataaminen ei onnistunut. Lopetetaan ohjelman suoritus.");
-            return;
+            return null;
         }
 
         // Vaihe 2: yhteyden ottaminen tietokantaan
@@ -60,7 +60,7 @@ public class Opiskelija.java {
         } catch(SQLException poikkeus) {
             System.out.println("Yhteyden sulkeminen tietokantaan ei onnistunut. Lopetetaan ohjelman suoritus.");
 
-            return NULL; //NULL
+            return null; //NULL
         }
 
         return rs; //Palautetaan tulosjoukko
@@ -70,14 +70,14 @@ public class Opiskelija.java {
     //Haetaan tehtävä
     public ResultSet haeTehtava(int tehtNro){
 
-        ResultSet rs; // Kyselyn tulokset
+        ResultSet rs = null; // Kyselyn tulokset
 
         // Vaihe 1: tietokanta-ajurin lataaminen
         try {
             Class.forName(AJURI);
         } catch (ClassNotFoundException poikkeus) {
             System.out.println("Ajurin lataaminen ei onnistunut. Lopetetaan ohjelman suoritus.");
-            return;
+            return null;
         }
 
         // Vaihe 2: yhteyden ottaminen tietokantaan
@@ -103,7 +103,7 @@ public class Opiskelija.java {
         } catch(SQLException poikkeus) {
             System.out.println("Yhteyden sulkeminen tietokantaan ei onnistunut. Lopetetaan ohjelman suoritus.");
 
-            return NULL; //NULL
+            return null; //NULL
         }
 
         return rs; //Palautetaan tulosjoukko
@@ -113,14 +113,14 @@ public class Opiskelija.java {
     //Hae esimerkkitietokanta
     public ResultSet haeEsimKanta(){
 
-        ResultSet rs; // Kyselyn tulokset
+        ResultSet rs = null; // Kyselyn tulokset
 
         // Vaihe 1: tietokanta-ajurin lataaminen
         try {
             Class.forName(AJURI);
         } catch (ClassNotFoundException poikkeus) {
             System.out.println("Ajurin lataaminen ei onnistunut. Lopetetaan ohjelman suoritus.");
-            return;
+            return null;
         }
 
         // Vaihe 2: yhteyden ottaminen tietokantaan
@@ -146,7 +146,7 @@ public class Opiskelija.java {
         } catch(SQLException poikkeus) {
             System.out.println("Yhteyden sulkeminen tietokantaan ei onnistunut. Lopetetaan ohjelman suoritus.");
 
-            return NULL; //NULL
+            return null; //NULL
         }
 
         return rs; //Palautetaan tulosjoukko
@@ -156,7 +156,7 @@ public class Opiskelija.java {
     //Laheta Kysely
     public ResultSet lahetaKysely(String kysely){
 
-        ResultSet rs; // Kyselyn tulokset
+        ResultSet rs = null; // Kyselyn tulokset
 
         boolean kyselyOikein = tarkistaKysely(kysely);
 
@@ -166,7 +166,7 @@ public class Opiskelija.java {
                 Class.forName(AJURI);
             } catch (ClassNotFoundException poikkeus) {
                 System.out.println("Ajurin lataaminen ei onnistunut. Lopetetaan ohjelman suoritus.");
-                return;
+                return null;
             }
 
             // Vaihe 2: yhteyden ottaminen tietokantaan
@@ -192,14 +192,14 @@ public class Opiskelija.java {
             } catch(SQLException poikkeus) {
                 System.out.println("Yhteyden sulkeminen tietokantaan ei onnistunut. Lopetetaan ohjelman suoritus.");
 
-                return NULL; //NULL
+                return null; //null
             }
 
             return rs; //Palautetaan tulosjoukko
         }
         else
         {
-            return NULL;
+            return null;
         }
     }
     //Tarkistetaan kysely ja tulostetaan virheet
