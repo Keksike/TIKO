@@ -1,7 +1,7 @@
 import java.sql.*;
 import java.util.scanner;
 
-public class Tira{
+public class TIKO{
 	private static final String AJURI = "org.postgresql.Driver";
 	private static final String PROTOKOLLA = "jdbc:postgresql:";
 	private static final String PALVELIN = "dbstud.sis.uta.fi";
