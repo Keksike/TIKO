@@ -45,8 +45,10 @@ public class Tiko {
 				//suoritetaan PS ja otetaan tulokset ylös
 				ResultSet tunnusTarkitusRS = tunnusTarkistusPS.executeQuery();
 				tunnusTarkitusRS.next();
+				
+				int oikeudet = tunnusTarkitusRS.getInt(1);
 
-				if(rs.getInt(0) == 0){
+				if(oikeudet == 0){
 					System.out.println("Käyttäjätunnusta ei löytynyt. Yritä uudelleen.");
 
 				}else{
@@ -57,7 +59,6 @@ public class Tiko {
 					oikeudetTarkistusPS.setInt(1, kayttajatunnus);
 					ResultSet oikeudetTarkitusRS = tunnusTarkistusPS.executeQuery();
 					oikeudetTarkitusRS.next();
-					int oikeudet = rs.getInt(0);
 
 					boolean valintaOK = false;
 
