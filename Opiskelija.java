@@ -130,7 +130,7 @@ public class Opiskelija {
           
             Statement stmt = con.createStatement();
 
-            rs = stmt.executeQuery("SELECT *" + "FROM esimkanta;"); //HUOM!!!!!!!!!!!!!!!!!!!!
+            rs = stmt.executeQuery("SELECT * " + "FROM esimkanta;"); //HUOM!!!!!!!!!!!!!!!!!!!!
 
             stmt.close();  // sulkee automaattisesti myös tulosjoukon rset
 
@@ -176,7 +176,13 @@ public class Opiskelija {
               
                 Statement stmt = con.createStatement();
 
-                rs = stmt.executeQuery(kysely);
+                // Tarkistetaan onko kyselyssä syntaksivirheitä
+                if(tarkistaSyntaksi()){
+
+                    rs = stmt.executeQuery(kysely);
+                }else {
+                    rs = null;
+                }
 
                 stmt.close();  // sulkee automaattisesti myös tulosjoukon rset
 
@@ -202,12 +208,96 @@ public class Opiskelija {
             return null;
         }
     }
-    //Tarkistetaan kysely ja tulostetaan virheet
-    public boolean tarkistaKysely(String kysely){
 
-        System.out.println("Puolipiste puuttuu jne");
-        return true;
+    //Tarkistaa kyselyn syntaksivirheiden varalta
+    public boolean tarkistaSyntaksi(String kysely){
+
+        char merkki;
+        int avausLaskuri;
+        int sulkuLaskuri;
+        boolean palautus;
+
+        palautus = true;
+
+        for(int i = 0; i < kysely.length(); i++){
+
+            merkki = kysely.charAt(i);
+
+            if (merkki == '(') {
+                avausLaskuri++;  
+            }
+            if (merkki == ')') {
+                sulkuLaskuri++;
+            }
+        }
+
+        if (avausLaskuri != sulkuLaskuri) {
+            System.out.println("Kyselyssä täytyy olla parillinen määrä kaarisulkeita.")
+            palautus = false;
+        }
+
+        merkki = kysely.charAt(kysely.length() - 1);
+
+        if(merkki != ';'){
+            System.out.println("Kyselyn täytyy päättyä puolipisteeseen.");
+            palautus = false;
+        }
+
+        return palautus;
     }
 
+    //Vertaa kahta ResultSettiä.
+    public boolean vertaaTulokset(ResultSet rs, ResultSet esim){
+
+        String tulos;
+        String vastaus;
+        int i;
+        boolean palautus;
+
+        i = 0;
+        palautus = true;
+
+        while(rs.next() | esim.next()){
+            
+            i++;
+            
+            tulos = rs.getString(i);
+            vastaus = esim.getString(i);
+
+            if(!(tulos.equals(vastaus))){
+                palautus = false;
+            }
+
+        }
+
+        //Vastaus oli väärä.
+        if (palautus == false) {
+            
+            System.out.println("Kyselyssä oli looginen virhe.\nVastauksesi palautti tuloksen:\n");
+            
+            i = 0;
+
+            while(rs.next()){
+                i++;
+                System.out.println(rs.getString(i));
+
+            }
+
+            System.out.println("Kyselyn tulisi tuottaa tulos:\n");
+            
+            i = 0;
+
+            while(esim.next()){
+                i++;
+                System.out.println(esim.getString(i));
+
+            }
+
+            return palautus;
+        }
+
+        return palautus;
+
+    }
 
 }
