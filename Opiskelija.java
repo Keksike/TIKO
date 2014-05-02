@@ -20,7 +20,7 @@ public class Opiskelija {
     private final String PROTOKOLLA = "jdbc:postgresql:";
     private final String PALVELIN = "dbstud.sis.uta.fi";
     private final int PORTTI = 5432;
-    private final String TIETOKANTA = "";  // tähän oma käyttäjätunnus
+    private final String TIETOKANTA = "tiko2014db29";  // tähän oma käyttäjätunnus
     private final String KAYTTAJA = "";  // tähän oma käyttäjätunnus
     private final String SALASANA = "";  // tähän tietokannan salasana
 
@@ -158,7 +158,7 @@ public class Opiskelija {
 
         ResultSet rs = null; // Kyselyn tulokset
 
-        boolean kyselyOikein = tarkistaKysely(kysely);
+        boolean kyselyOikein = tarkistaSyntaksi(kysely);
 
         if (kyselyOikein) {
             // Vaihe 1: tietokanta-ajurin lataaminen
@@ -177,7 +177,7 @@ public class Opiskelija {
                 Statement stmt = con.createStatement();
 
                 // Tarkistetaan onko kyselyssä syntaksivirheitä
-                if(tarkistaSyntaksi()){
+                if(tarkistaSyntaksi(kysely)){
 
                     rs = stmt.executeQuery(kysely);
                 }else {
@@ -213,8 +213,8 @@ public class Opiskelija {
     public boolean tarkistaSyntaksi(String kysely){
 
         char merkki;
-        int avausLaskuri;
-        int sulkuLaskuri;
+        int avausLaskuri = 0;
+        int sulkuLaskuri = 0;
         boolean palautus;
 
         palautus = true;
@@ -232,7 +232,7 @@ public class Opiskelija {
         }
 
         if (avausLaskuri != sulkuLaskuri) {
-            System.out.println("Kyselyssä täytyy olla parillinen määrä kaarisulkeita.")
+            System.out.println("Kyselyssä täytyy olla parillinen määrä kaarisulkeita.");
             palautus = false;
         }
 
@@ -256,7 +256,7 @@ public class Opiskelija {
 
         i = 0;
         palautus = true;
-
+        try {
         while(rs.next() | esim.next()){
             
             i++;
@@ -295,6 +295,10 @@ public class Opiskelija {
 
             return palautus;
         }
+        }
+        catch (SQLException poikkeus) {
+            System.out.println("Tapahtui seuraava virhe: " + poikkeus.getMessage());     
+        }       
 
         return palautus;
 
