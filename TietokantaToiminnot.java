@@ -1,11 +1,14 @@
 /*
-
-Pohjana on käytetty kurssilla tarjottua JDBC esimerkkiä.
-
-Ohje:
-1. kopioi kotihakemistoon shell.sis.uta.fi:ssa
-2. kääntö shell.sis.fi:ssa komennolla: javac Testi.java
-3. ajo shell.sis.uta.fi:ssa komennolla: java -classpath /usr/share/java/postgresql.jar:. Testi
+* TIKO-kurssin harjoitustyön luokka, jossa on tietokannallinen toiminnallisuus
+*
+* author: Jenni Mansikka-Aho, Ossi Puustinen & Cihan Bebek
+*
+* Pohjana on käytetty kurssilla tarjottua JDBC esimerkkiä.
+*
+* Ohje:
+* 1. kopioi kotihakemistoon shell.sis.uta.fi:ssa
+* 2. kääntö shell.sis.fi:ssa komennolla: javac Testi.java
+* 3. ajo shell.sis.uta.fi:ssa komennolla: java -classpath /usr/share/java/postgresql.jar:. Testi
 */
 
 
@@ -68,7 +71,7 @@ public class TietokantaToiminnot {
     }
 
     //Haetaan tehtävä
-    public ResultSet haeTehtava(int tehtNro){
+    public static ResultSet haeTehtava(int tehtNro){
 
         ResultSet rs = null; // Kyselyn tulokset
 
@@ -313,6 +316,27 @@ public class TietokantaToiminnot {
             final String tehtavalistaTarkistus = "SELECT count(*) FROM tehtavalista WHERE id = " + id + ";";
 
             ResultSet rs = lahetaKysely(tehtavalistaTarkistus);
+
+            if(rs.next()){
+
+                if(rs.getInt(1) > 0){
+                    return true;
+                }
+            }
+            return false;
+
+        }catch(SQLException poikkeus){
+            System.out.println("Tapahtui bugi.");
+            return false;
+        }
+    }
+
+    public static boolean onkoTehtavaOlemassa(int id){
+        try{
+
+            final String tehtavaTarkistus = "SELECT count(*) FROM tehtava WHERE id = " + id + ";";
+
+            ResultSet rs = lahetaKysely(tehtavaTarkistus);
 
             if(rs.next()){
 

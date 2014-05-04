@@ -1,15 +1,14 @@
+/*
+* TIKO-kurssin harjoitustyön pääluokka
+*
+* author: Jenni Mansikka-Aho, Ossi Puustinen & Cihan Bebek
+*/
+
+
 import java.sql.*;
 import java.util.Scanner;
 
 public class TIKO {
-/*	private static final String AJURI = "org.postgresql.Driver";
-	private static final String PROTOKOLLA = "jdbc:postgresql:";
-	private static final String PALVELIN = "dbstud.sis.uta.fi";
-	private static final int PORTTI = 5432;
-	private static final String TIETOKANTA = "";	// tähän oma käyttäjätunnus
-	private static final String KAYTTAJA = "";	// tähän oma käyttäjätunnus
-	private static final String SALASANA = "";	// tähän tietokannan salasana*/
-
 	public static void main(String args[]){
 
 			boolean kayttajatunnusOK = false;
@@ -19,7 +18,7 @@ public class TIKO {
 			System.out.println("Käyttäjätunnus:");
 			kayttajatunnus = In.readInt();
 
-			if(TietokantaToiminnot.onkoKayttajaOlemassa(kayttajatunnus)){ //jos arvoa ei löytynyt
+			if(!TietokantaToiminnot.onkoKayttajaOlemassa(kayttajatunnus)){ //jos arvoa ei löytynyt
 
 				System.out.println("Käyttäjätunnusta ei löytynyt. Yritä uudelleen.");
 
@@ -54,19 +53,32 @@ public class TIKO {
 
 									numeroOK = true;
 									ResultSet tehtavalista = TietokantaToiminnot.haeTehtLista(tehtavaListaNro);
-									//tähän tulostukset ja kyselyt
+									/*tähän tulostukset ja jatkokyselyt*/
+
 								}
 							}
 						}else if(valinta == 2){
 
 							toimintoValintaOK = true;
 
-							/*TÄHÄN TOIMINNALLISUUTTA Opiskelija.java:sta*/
-								
+							boolean numeroOK = false;
+							while(!numeroOK){
+
+								System.out.println("Tehtävän numero:");
+								int tehtavaNro = In.readInt();
+
+								if(TietokantaToiminnot.onkoTehtavaOlemassa(tehtavaNro)){
+
+									numeroOK = true;
+									ResultSet tehtavalista = TietokantaToiminnot.haeTehtava(tehtavaNro);
+									/*tähän tulostukset ja jatkokyselyt*/
+
+								}
+							}
 						}else{
 
 							System.out.println("Virheellinen valinta! Yritä uudelleen.");
-							
+
 						}
 					}
 				}else if(oikeudet == 2){ //opettaja
