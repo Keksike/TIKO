@@ -25,7 +25,7 @@ public class TietokantaToiminnot {
     private static final String SALASANA = "";  // tähän tietokannan salasana
 
     //Haetaan tehtavalista
-    public ResultSet haeTehtLista(int listaNro){
+    public static ResultSet haeTehtLista(int listaNro){
 
         ResultSet rs = null; // Kyselyn tulokset
 
@@ -301,30 +301,74 @@ public class TietokantaToiminnot {
 
         return palautus;
 
+
+
     }
 
-    //tarkistaa löytyykö parametrina annettu käyttäjätunnus tietokannasta
-/*    public boolean tarkistaKayttajatunnus(int kId){
-        ResultSet rs = null; // Kyselyn tulokset
+    /*Parametrinä tehtävälistan id*/
+    public static boolean onkoTehtavalistaOlemassa(int id){
 
-        // Vaihe 1: tietokanta-ajurin lataaminen
-        try {
-            Class.forName(AJURI);
-        } catch (ClassNotFoundException poikkeus) {
-            System.out.println("Ajurin lataaminen ei onnistunut. Lopetetaan ohjelman suoritus.");
-            return null;
+        try{
+
+            final String tehtavalistaTarkistus = "SELECT count(*) FROM tehtavalista WHERE id = " + id + ";";
+
+            ResultSet rs = lahetaKysely(tehtavalistaTarkistus);
+
+            if(rs.next()){
+
+                if(rs.getInt(1) > 0){
+                    return true;
+                }
+            }
+            return false;
+
+        }catch(SQLException poikkeus){
+            System.out.println("Tapahtui bugi.");
+            return false;
         }
+    }
 
+    /*Parametrinä käyttäjätunnus, eli id*/
+    public static boolean onkoKayttajaOlemassa(int id){
 
+        try{
 
-        if (con != null) try {     // jos yhteyden luominen ei onnistunut, con == null
-            con.close();
-        } catch(SQLException poikkeus) {
-            System.out.println("Yhteyden sulkeminen tietokantaan ei onnistunut. Lopetetaan ohjelman suoritus.");
+            final String tunnusTarkistus = "SELECT count(*) FROM kayttaja WHERE id = " + id + ";";
 
-            return null; //NULL
+            ResultSet rs = lahetaKysely(tunnusTarkistus);
+
+            if(rs.next()){
+
+                if(rs.getInt(1) > 0){
+                    return true;
+                }
+            }
+            return false;
+
+        }catch(SQLException poikkeus){
+            System.out.println("Tapahtui bugi.");
+            return false;
         }
+    }
 
-    }*/
+    /*palauttaa 0 jos ei löydy*/
+    public static int haeOikeudet(int id){
 
+        try{
+
+            String oikeudetTarkistus = "SELECT oikeudet FROM kayttaja WHERE id = " + id + ";";
+
+            ResultSet rs = lahetaKysely(oikeudetTarkistus);
+
+            if(rs.next()){
+
+                return rs.getInt(1);
+            }
+            return 0;
+
+        }catch(SQLException poikkeus){
+            System.out.println("Tapahtui bugi.");
+            return 0;
+        }
+    }
 }

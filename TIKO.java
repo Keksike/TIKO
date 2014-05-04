@@ -11,99 +11,78 @@ public class TIKO {
 	private static final String SALASANA = "";	// tähän tietokannan salasana*/
 
 	public static void main(String args[]){
-/*		try {
-			Class.forName(AJURI);
-		} catch (ClassNotFoundException poikkeus) {
-			System.out.println("Ajurin lataaminen ei onnistunut. Lopetetaan ohjelman suoritus.");
-			return;
-		}*/
-
-		//Connection con = null;
-
-		try{
-			//con = DriverManager.getConnection(PROTOKOLLA + "//" + PALVELIN + ":" + PORTTI + "/" + TIETOKANTA, KAYTTAJA, SALASANA);
 
 			boolean kayttajatunnusOK = false;
 			int kayttajatunnus;
 
-			//käytetään tarkistamaan löytyykö annettu käyttäjätunnus (id) tietokannasta
-			final String tunnusTarkistus = "SELECT count(*) FROM kayttaja WHERE id = ?;";
+		while(!kayttajatunnusOK){
+			System.out.println("Käyttäjätunnus:");
+			kayttajatunnus = In.readInt();
 
-			//final PreparedStatement tunnusTarkistusPS = con.prepareStatement(tunnusTarkistus);
+			if(TietokantaToiminnot.onkoKayttajaOlemassa(kayttajatunnus)){ //jos arvoa ei löytynyt
 
-			//käytetään tarkistamaan käyttäjän oikeudet. opiskelija (1), opettaja(2) vai ylläpitäjä(3)
-			final String oikeudetTarkistus = "SELECT oikeudet FROM kayttaja WHERE id = ?;";
+				System.out.println("Käyttäjätunnusta ei löytynyt. Yritä uudelleen.");
 
-			//final PreparedStatement oikeudetTarkistusPS = con.prepareStatement(oikeudetTarkistus);
+			}else{
 
+				kayttajatunnusOK = true;
+				System.out.println("Sisäänkirjautuminen onnistui!");
 
-			while(!kayttajatunnusOK){
-				System.out.println("Käyttäjätunnus:");
-				kayttajatunnus = In.readInt();
+				//opiskelija (1), opettaja(2) vai ylläpitäjä(3)
+				int oikeudet = TietokantaToiminnot.haeOikeudet(kayttajatunnus);
 
-				//asetetaan annettu käyttäjätunnus PS:ään
-				//tunnusTarkistusPS.setInt(1, kayttajatunnus);
+				boolean toimintoValintaOK = false;
 
-				//suoritetaan PS ja otetaan tulokset ylös
-				ResultSet tunnusTarkitusRS = TietokantaToiminnot.lahetaKysely(tunnusTarkistus);
-				tunnusTarkitusRS.next();
-				
-				int oikeudet = tunnusTarkitusRS.getInt(1);
+				if(oikeudet == 1){ //opiskelija
+					while(!toimintoValintaOK){
 
-				if(oikeudet == 0){
-					System.out.println("Käyttäjätunnusta ei löytynyt. Yritä uudelleen.");
+						System.out.println("Olet opiskelija. Mikäli haluat nähdä tehtävälistan, kirjoita 1. Mikäli haluat suorittaa tehtävälistan, kirjoita 2.");
+						System.out.println("Valinta:");
+
+						int valinta = In.readInt();
+
+						if(valinta == 1){
+							toimintoValintaOK = true;
+
+							boolean numeroOK = false;
+							while(!numeroOK){
+
+								System.out.println("Tehtävälistan numero:");
+								int tehtavaListaNro = In.readInt();
+
+								if(TietokantaToiminnot.onkoTehtavalistaOlemassa(tehtavaListaNro)){
+
+									numeroOK = true;
+									ResultSet tehtavalista = TietokantaToiminnot.haeTehtLista(tehtavaListaNro);
+									//tähän tulostukset ja kyselyt
+								}
+							}
+						}else if(valinta == 2){
+
+							toimintoValintaOK = true;
+
+							/*TÄHÄN TOIMINNALLISUUTTA Opiskelija.java:sta*/
+								
+						}else{
+
+							System.out.println("Virheellinen valinta! Yritä uudelleen.");
+							
+						}
+					}
+				}else if(oikeudet == 2){ //opettaja
+
+					System.out.println("Olet opettaja. ");
+
+				}else if(oikeudet == 3){ //ylläpitäjä
+
+					System.out.println("Olet ylläpitäjä. ");
 
 				}else{
-					kayttajatunnusOK = true;
-					System.out.println("Sisäänkirjautuminen onnistui!");
 
-					//opiskelija (1), opettaja(2) vai ylläpitäjä(3)
-					//oikeudetTarkistusPS.setInt(1, kayttajatunnus);
-					ResultSet oikeudetTarkitusRS = TietokantaToiminnot.lahetaKysely(oikeudetTarkistus);
-					oikeudetTarkitusRS.next();
+					System.out.println("Oikeuksia ei löytynyt. Ohjelma sammuu.");
 
-					boolean valintaOK = false;
-
-					if(oikeudet == 1){ //opiskelija
-						while(!valintaOK){
-							System.out.println("Olet opiskelija. Mikäli haluat nähdä tehtävälistan, kirjoita 1. Mikäli haluat suorittaa tehtävälistan, kirjoita 2.");
-							System.out.println("Valinta:");
-
-							int valinta = In.readInt();
-
-							if(valinta == 1){
-								valintaOK = true;
-
-
-
-								/*TÄHÄN TOIMINNALLISUUTTA Opiskelija.java:sta*/
-
-							}else if(valinta == 2){
-								valintaOK = true;
-
-								/*TÄHÄN TOIMINNALLISUUTTA Opiskelija.java:sta*/
-								
-							}else{
-								System.out.println("Virheellinen valinta! Yritä uudelleen.");
-							}
-						}
-
-					}else if(oikeudet == 2){ //opettaja
-						System.out.println("Olet opettaja. ");
-
-					}else if(oikeudet == 3){ //ylläpitäjä
-						System.out.println("Olet ylläpitäjä. ");
-
-					}
 				}
-
-
 			}
-
-		}catch(SQLException poikkeus){
-
-			System.out.println("Yhteyden sulkeminen tietokantaan ei onnistunut. Lopetetaan ohjelman suoritus.");
-			return;
 		}
 	}
 }
