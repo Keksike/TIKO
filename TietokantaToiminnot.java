@@ -32,38 +32,15 @@ public class TietokantaToiminnot {
 
         ResultSet rs = null; // Kyselyn tulokset
 
-        // Vaihe 1: tietokanta-ajurin lataaminen
         try {
-            Class.forName(AJURI);
+            
+            String lause = "SELECT id, kuvaus " + "FROM teht_lista + WHERE id = " + listaNro + ";";
+
+            lahetaKysely(lause);
+
         } catch (ClassNotFoundException poikkeus) {
-            System.out.println("Ajurin lataaminen ei onnistunut. Lopetetaan ohjelman suoritus.");
+            System.out.println("Jokin meni pieleen.");
             return null;
-        }
-
-        // Vaihe 2: yhteyden ottaminen tietokantaan
-        Connection con = null;
-        try {
-            con = DriverManager.getConnection(PROTOKOLLA + "//" + PALVELIN + ":" + PORTTI + "/" + TIETOKANTA, KAYTTAJA, SALASANA);
-          
-            Statement stmt = con.createStatement();
-
-            rs = stmt.executeQuery("SELECT id, kuvaus " + "FROM teht_lista + WHERE id = " + listaNro + ";");
-
-            stmt.close();  // sulkee automaattisesti myös tulosjoukon rset
-
-        // Toiminta mahdollisessa virhetilanteessa
-        } catch (SQLException poikkeus) {
-            System.out.println("Tapahtui seuraava virhe: " + poikkeus.getMessage());     
-        }       
-
-        // Vaihe 3: yhteyden sulkeminen 
-     
-        if (con != null) try {     // jos yhteyden luominen ei onnistunut, con == null
-            con.close();
-        } catch(SQLException poikkeus) {
-            System.out.println("Yhteyden sulkeminen tietokantaan ei onnistunut. Lopetetaan ohjelman suoritus.");
-
-            return null; //NULL
         }
 
         return rs; //Palautetaan tulosjoukko
@@ -75,38 +52,16 @@ public class TietokantaToiminnot {
 
         ResultSet rs = null; // Kyselyn tulokset
 
-        // Vaihe 1: tietokanta-ajurin lataaminen
+
         try {
-            Class.forName(AJURI);
+            
+            String lause = "SELECT id, kuvaus, esim_vastaus " + "FROM tehtava + WHERE id = " + tehtNro + ";";
+
+            lahetaKysely(lause);
+
         } catch (ClassNotFoundException poikkeus) {
-            System.out.println("Ajurin lataaminen ei onnistunut. Lopetetaan ohjelman suoritus.");
+            System.out.println("Jokin meni pieleen.");
             return null;
-        }
-
-        // Vaihe 2: yhteyden ottaminen tietokantaan
-        Connection con = null;
-        try {
-            con = DriverManager.getConnection(PROTOKOLLA + "//" + PALVELIN + ":" + PORTTI + "/" + TIETOKANTA, KAYTTAJA, SALASANA);
-          
-            Statement stmt = con.createStatement();
-
-            rs = stmt.executeQuery("SELECT id, kuvaus, esim_vastaus " + "FROM tehtava + WHERE id = " + tehtNro + ";");
-
-            stmt.close();  // sulkee automaattisesti myös tulosjoukon rset
-
-        // Toiminta mahdollisessa virhetilanteessa
-        } catch (SQLException poikkeus) {
-            System.out.println("Tapahtui seuraava virhe: " + poikkeus.getMessage());     
-        }       
-
-        // Vaihe 3: yhteyden sulkeminen 
-     
-        if (con != null) try {     // jos yhteyden luominen ei onnistunut, con == null
-            con.close();
-        } catch(SQLException poikkeus) {
-            System.out.println("Yhteyden sulkeminen tietokantaan ei onnistunut. Lopetetaan ohjelman suoritus.");
-
-            return null; //NULL
         }
 
         return rs; //Palautetaan tulosjoukko
@@ -118,38 +73,16 @@ public class TietokantaToiminnot {
 
         ResultSet rs = null; // Kyselyn tulokset
 
-        // Vaihe 1: tietokanta-ajurin lataaminen
+
         try {
-            Class.forName(AJURI);
+            
+            String lause = "SELECT * " + "FROM esimkanta;";
+
+            lahetaKysely(lause);
+
         } catch (ClassNotFoundException poikkeus) {
-            System.out.println("Ajurin lataaminen ei onnistunut. Lopetetaan ohjelman suoritus.");
+            System.out.println("Jokin meni pieleen.");
             return null;
-        }
-
-        // Vaihe 2: yhteyden ottaminen tietokantaan
-        Connection con = null;
-        try {
-            con = DriverManager.getConnection(PROTOKOLLA + "//" + PALVELIN + ":" + PORTTI + "/" + TIETOKANTA, KAYTTAJA, SALASANA);
-          
-            Statement stmt = con.createStatement();
-
-            rs = stmt.executeQuery("SELECT * " + "FROM esimkanta;"); //HUOM!!!!!!!!!!!!!!!!!!!!
-
-            stmt.close();  // sulkee automaattisesti myös tulosjoukon rset
-
-        // Toiminta mahdollisessa virhetilanteessa
-        } catch (SQLException poikkeus) {
-            System.out.println("Tapahtui seuraava virhe: " + poikkeus.getMessage());     
-        }       
-
-        // Vaihe 3: yhteyden sulkeminen 
-     
-        if (con != null) try {     // jos yhteyden luominen ei onnistunut, con == null
-            con.close();
-        } catch(SQLException poikkeus) {
-            System.out.println("Yhteyden sulkeminen tietokantaan ei onnistunut. Lopetetaan ohjelman suoritus.");
-
-            return null; //NULL
         }
 
         return rs; //Palautetaan tulosjoukko
