@@ -1,6 +1,6 @@
 /*
 * TIKO-harkkatyön tietokannan luontilauseet
-* author: Jenni Mansikka-Aho, Ossi Puustinen ja Cihan Bebek
+* author: Jenni Mansikka-aho, Ossi Puustinen ja Cihan Bebek
 */
 
 CREATE TABLE kayttaja (
@@ -54,8 +54,8 @@ CREATE TABLE tehdaan (
 	sessio_id INT references sessio(id),
 	yritysnro INT,
 	oliko_oikein BOOLEAN,
-	aloitus_aika TIMESTAMP,
-	lopetus_aika TIMESTAMP
+	aloitus_aika TIME,
+	lopetus_aika TIME
 );
 
 INSERT INTO kayttaja VALUES (1, ’testaaja1’, 12345, ’tkt’, 1);
