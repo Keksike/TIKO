@@ -95,7 +95,7 @@ public class TietokantaToiminnot {
             
             String lause = "SELECT id, kuvaus FROM tehtavalista WHERE id = " + listaNro + ";";
 
-            lahetaKysely(lause);
+            rs = lahetaKysely(lause);
 
         } catch (Exception poikkeus) {
             System.out.println("Jokin meni pieleen.");
@@ -116,7 +116,7 @@ public class TietokantaToiminnot {
             
             String lause = "SELECT id, kuvaus, esim_vastaus FROM tehtava WHERE id = " + tehtNro + ";";
 
-            lahetaKysely(lause);
+            rs = lahetaKysely(lause);
 
         } catch (Exception poikkeus) {
             System.out.println("Jokin meni pieleen.");
@@ -137,7 +137,7 @@ public class TietokantaToiminnot {
             
             String lause = "SELECT * " + "FROM esimkanta;";
 
-            lahetaKysely(lause);
+            rs = lahetaKysely(lause);
 
         } catch (Exception poikkeus) {
             System.out.println("Jokin meni pieleen.");
