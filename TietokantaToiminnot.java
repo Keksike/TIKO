@@ -290,11 +290,11 @@ public class TietokantaToiminnot {
 			ResultSet rs = lahetaKysely(tehtavalistaTarkistus);
 
 			if (rs.next()) {
-
 				if(rs.getInt(1) > 0){
 					return true;
 				}
 			}
+
 			return false;
 
 		}catch(SQLException poikkeus){
@@ -311,11 +311,11 @@ public class TietokantaToiminnot {
 			ResultSet rs = lahetaKysely(tehtavaTarkistus);
 
 			if(rs.next()){
-
 				if(rs.getInt(1) > 0){
 					return true;
 				}
 			}
+
 			return false;
 
 		}catch(SQLException poikkeus){
@@ -334,7 +334,6 @@ public class TietokantaToiminnot {
 			ResultSet rs = lahetaKysely(tunnusTarkistus);
 
 			if(rs.next()){
-
 				if(rs.getInt(1) > 0){
 					return true;
 				}
@@ -357,6 +356,41 @@ public class TietokantaToiminnot {
 			ResultSet rs = lahetaKysely(oikeudetTarkistus);
 
 			if(rs.next()){
+				return rs.getInt(1);
+			}
+
+			return 0;
+
+		}catch(SQLException poikkeus){
+			System.out.println("Tapahtui bugi.");
+			return 0;
+		}
+	}
+
+	/*Parametrinä käyttäjätunnus: k_id ja tehtävälistatunnus: t_id*/
+	public static int aloitaSessio(int k_id, int t_id){
+
+		try{
+
+			//hakee isoimman sessionin id:n resultsettiin
+			ResultSet rs = lahetaKysely("SELECT max(id) FROM sessio;");
+
+			//tähän tallennetaan uusi ID
+			int uusiID = 0;
+
+			if(rs.next()){
+				//kasvatetaan ID:tä yhellä
+				uusiID = rs.getInt(1)+1;
+
+			}
+			//ja tähän tämän hetken aika
+			java.sql.Time aika = haeAika();
+
+			//puuttuu tuo yristen numero
+			//puuttuu osaa
+			String sessioAloitus = "INSERT INTO sessio VALUES (" + uusiID + ", " + k_id + ", " + t_id + ", " + aika + ", " + aika + ");";
+
+			if(rs.next()){
 
 				return rs.getInt(1);
 			}
@@ -367,4 +401,14 @@ public class TietokantaToiminnot {
 			return 0;
 		}
 	}
+
+	/*hakee ja palauttaa tämänhetkisen ajan, eli pelkän ajan, ei pvm*/
+    public static java.sql.Time haeAika(){
+        java.util.Date a = new java.util.Date();
+        long aikaL = a.getTime();
+
+        java.sql.Time aika = new java.sql.Time(aikaL);
+
+        return aika;
+    }
 }
