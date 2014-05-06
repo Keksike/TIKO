@@ -24,8 +24,8 @@ public class TietokantaToiminnot {
     private static final String PALVELIN = "dbstud.sis.uta.fi";
     private static final int PORTTI = 5432;
     private static final String TIETOKANTA = "tiko2014db29";  // tähän oma käyttäjätunnus
-    private static final String KAYTTAJA = "";  // tähän oma käyttäjätunnus
-    private static final String SALASANA = "";  // tähän tietokannan salasana
+    private static final String KAYTTAJA = "jm96400";  // tähän oma käyttäjätunnus
+    private static final String SALASANA = "tiko";  // tähän tietokannan salasana
 
     private static Connection con;
     private static Statement stmt;
@@ -43,7 +43,7 @@ public class TietokantaToiminnot {
         }
 
         // Vaihe 2: yhteyden ottaminen tietokantaan
-        Connection con = null;
+        con = null;
         try {
             con = DriverManager.getConnection(PROTOKOLLA + "//" + PALVELIN + ":" + PORTTI + "/" + TIETOKANTA, KAYTTAJA, SALASANA);
           
@@ -60,7 +60,7 @@ public class TietokantaToiminnot {
     }
 
 
-    //Yhteyden sulkmeinen
+    //Yhteyden sulkeminen
     public boolean suljeYhteys(){
 
         // yhteyden sulkeminen 
@@ -93,7 +93,7 @@ public class TietokantaToiminnot {
 
         try {
             
-            String lause = "SELECT id, kuvaus " + "FROM teht_lista + WHERE id = " + listaNro + ";";
+            String lause = "SELECT id, kuvaus FROM tehtavalista WHERE id = " + listaNro + ";";
 
             lahetaKysely(lause);
 
@@ -282,13 +282,13 @@ public class TietokantaToiminnot {
     /*Parametrinä tehtävälistan id*/
     public static boolean onkoTehtavalistaOlemassa(int id){
 
-        try{
+        try {
 
             final String tehtavalistaTarkistus = "SELECT count(*) FROM tehtavalista WHERE id = " + id + ";";
 
             ResultSet rs = lahetaKysely(tehtavalistaTarkistus);
 
-            if(rs.next()){
+            if (rs.next()) {
 
                 if(rs.getInt(1) > 0){
                     return true;
