@@ -42,8 +42,8 @@ CREATE TABLE sessio (
 	kayt_id INT references kayttaja(id), /*käyttäjätunnus*/
 	suoritettu_teht_lista INT references tehtavalista(id), /*tehtävälista*/
 
-	sessio_alku TIMESTAMP,
-	sessio_loppu TIMESTAMP,
+	sessio_alku TIME,
+	sessio_loppu TIME,
 	yritysnro INT,
 	yritys_vastaus VARCHAR(200),
 	PRIMARY KEY (id)
