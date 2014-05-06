@@ -24,8 +24,8 @@ public class TietokantaToiminnot {
 	private static final String PALVELIN = "dbstud.sis.uta.fi";
 	private static final int PORTTI = 5432;
 	private static final String TIETOKANTA = "tiko2014db29";  // tähän oma käyttäjätunnus
-	private static final String KAYTTAJA = "jm96400";  // tähän oma käyttäjätunnus
-	private static final String SALASANA = "tiko";  // tähän tietokannan salasana
+	private static final String KAYTTAJA = "";  // tähän oma käyttäjätunnus
+	private static final String SALASANA = "";  // tähän tietokannan salasana
 
 	private static Connection con;
 	private static Statement stmt;
@@ -107,22 +107,23 @@ public class TietokantaToiminnot {
 	}
 
 	//Haetaan tehtävä
-	public static ResultSet haeTehtava(int tehtNro){
+	public static ResultSet haeTehtava(int tehtNro, int tehtLista){
 
 		ResultSet rs = null; // Kyselyn tulokset
+		try {            
+		String lause = "SELECT tehtava.id, tehtava.kuvaus " + 
+			"FROM tehtava, kuuluu, tehtavalista " + 
+			"WHERE tehtava.id = " + tehtNro + 
+			" AND tehtavalista.id = " + tehtLista + 
+			" AND tehtava.id = kuuluu.tehtava_id AND kuuluu.tehtavalista_id = tehtavalista.id;";
 
-
-		try {
-			
-			String lause = "SELECT id, kuvaus, esim_vastaus FROM tehtava WHERE id = " + tehtNro + ";";
-
-			rs = lahetaKysely(lause);
+		rs = lahetaKysely(lause);
 
 		} catch (Exception poikkeus) {
 			System.out.println("Jokin meni pieleen.");
 			return null;
 		}
-
+        
 		return rs; //Palautetaan tulosjoukko
 
 	}
