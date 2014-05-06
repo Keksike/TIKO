@@ -27,8 +27,8 @@ public class TietokantaToiminnot {
     private static final String KAYTTAJA = "";  // tähän oma käyttäjätunnus
     private static final String SALASANA = "";  // tähän tietokannan salasana
 
-    private Connection con;
-    private Statement stmt;
+    private static Connection con;
+    private static Statement stmt;
 
     //Yhteyden avaaminen
     public boolean avaaYhteys(){
@@ -63,18 +63,24 @@ public class TietokantaToiminnot {
     //Yhteyden sulkmeinen
     public boolean suljeYhteys(){
 
-        stmt.close(); // Sulkee myös tulosjoukon
-
         // yhteyden sulkeminen 
      
-        if (con != null) try {     // jos yhteyden luominen ei onnistunut, con == null
-            con.close();
-            return true;
+        if (con != null) { // jos yhteyden luominen ei onnistunut, con == null
 
-        } catch(SQLException poikkeus) {
-            System.out.println("Yhteyden sulkeminen tietokantaan ei onnistunut. Lopetetaan ohjelman suoritus.");
+            try {     
+                con.close();
+                stmt.close(); // Sulkee myös tulosjoukon    
+                return true;
 
-            return false; //null
+            } catch(SQLException poikkeus) {
+                System.out.println("Yhteyden sulkeminen tietokantaan ei onnistunut. Lopetetaan ohjelman suoritus.");
+
+                return false; //null
+            }
+
+        }else{
+            System.out.println("Yhteyttä tietokantaan ei ollut. Yhteyden sulkeminen tietokantaan ei onnistunut.");
+            return false;
         }
 
     }
@@ -167,9 +173,10 @@ public class TietokantaToiminnot {
             // Toiminta mahdollisessa virhetilanteessa
             } catch (SQLException poikkeus) {
                 System.out.println("Tapahtui seuraava virhe: " + poikkeus.getMessage());     
-            }       
-        else
-        {
+                return null;
+            }
+
+        } else {
             System.out.println("Kyselyssä on virheellinen syntaksi. Tarkista mahdolliset kirjoitusvirheet.");
             return null;
         }
