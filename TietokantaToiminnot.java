@@ -38,7 +38,7 @@ public class TietokantaToiminnot {
 
             lahetaKysely(lause);
 
-        } catch (ClassNotFoundException poikkeus) {
+        } catch (Exception poikkeus) {
             System.out.println("Jokin meni pieleen.");
             return null;
         }
@@ -59,7 +59,7 @@ public class TietokantaToiminnot {
 
             lahetaKysely(lause);
 
-        } catch (ClassNotFoundException poikkeus) {
+        } catch (Exception poikkeus) {
             System.out.println("Jokin meni pieleen.");
             return null;
         }
@@ -80,7 +80,7 @@ public class TietokantaToiminnot {
 
             lahetaKysely(lause);
 
-        } catch (ClassNotFoundException poikkeus) {
+        } catch (Exception poikkeus) {
             System.out.println("Jokin meni pieleen.");
             return null;
         }
