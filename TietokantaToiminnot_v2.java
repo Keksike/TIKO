@@ -114,7 +114,7 @@ public class TietokantaToiminnot {
 
         try {
             
-            String lause = "SELECT id, kuvaus, esim_vastaus " + "FROM tehtava + WHERE id = " + tehtNro + ";";
+            String lause = "SELECT id, kuvaus, esim_vastaus FROM tehtava WHERE id = " + tehtNro + ";";
 
             lahetaKysely(lause);
 
