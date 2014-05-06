@@ -14,11 +14,15 @@ public class TIKO {
 			boolean kayttajatunnusOK = false;
 			int kayttajatunnus;
 
+			TietokantaToiminnot db = new TietokantaToiminnot();
+
+			db.avaaYhteys();
+
 		while(!kayttajatunnusOK){
 			System.out.println("Käyttäjätunnus:");
 			kayttajatunnus = In.readInt();
 
-			if(!TietokantaToiminnot.onkoKayttajaOlemassa(kayttajatunnus)){ //jos arvoa ei löytynyt
+			if(!db.onkoKayttajaOlemassa(kayttajatunnus)){ //jos arvoa ei löytynyt
 
 				System.out.println("Käyttäjätunnusta ei löytynyt. Yritä uudelleen.");
 
@@ -28,7 +32,7 @@ public class TIKO {
 				System.out.println("Sisäänkirjautuminen onnistui!");
 
 				//opiskelija (1), opettaja(2) vai ylläpitäjä(3)
-				int oikeudet = TietokantaToiminnot.haeOikeudet(kayttajatunnus);
+				int oikeudet = db.haeOikeudet(kayttajatunnus);
 
 				boolean toimintoValintaOK = false;
 
@@ -49,10 +53,10 @@ public class TIKO {
 								System.out.println("Tehtävälistan numero:");
 								int tehtavaListaNro = In.readInt();
 
-								if(TietokantaToiminnot.onkoTehtavalistaOlemassa(tehtavaListaNro)){
+								if(db.onkoTehtavalistaOlemassa(tehtavaListaNro)){
 
 									numeroOK = true;
-									ResultSet tehtavalista = TietokantaToiminnot.haeTehtLista(tehtavaListaNro);
+									ResultSet tehtavalista = db.haeTehtLista(tehtavaListaNro);
 									/*tähän tulostukset ja jatkokyselyt*/
 
 								}
@@ -67,10 +71,10 @@ public class TIKO {
 								System.out.println("Tehtävän numero:");
 								int tehtavaNro = In.readInt();
 
-								if(TietokantaToiminnot.onkoTehtavaOlemassa(tehtavaNro)){
+								if(db.onkoTehtavaOlemassa(tehtavaNro)){
 
 									numeroOK = true;
-									ResultSet tehtavalista = TietokantaToiminnot.haeTehtava(tehtavaNro);
+									ResultSet tehtavalista = db.haeTehtava(tehtavaNro);
 									/*tähän tulostukset ja jatkokyselyt*/
 
 								}
@@ -94,6 +98,8 @@ public class TIKO {
 					System.out.println("Oikeuksia ei löytynyt. Ohjelma sammuu.");
 
 				}
+
+				db.suljeYhteys();
 			}
 		}
 	}
