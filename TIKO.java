@@ -11,12 +11,12 @@ import java.util.Scanner;
 public class TIKO {
 	public static void main(String args[]){
 
-			boolean kayttajatunnusOK = false;
-			int kayttajatunnus;
+		boolean kayttajatunnusOK = false;
+		int kayttajatunnus;
 
-			TietokantaToiminnot db = new TietokantaToiminnot();
+		TietokantaToiminnot db = new TietokantaToiminnot();
 
-			db.avaaYhteys();
+		db.avaaYhteys();
 
 		while(!kayttajatunnusOK){
 			System.out.println("Käyttäjätunnus:");
