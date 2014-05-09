@@ -76,6 +76,17 @@ public class TIKO {
 									numeroOK = true;
 									ResultSet tehtavalista = db.haeTehtava(tehtavaNro);
 									/*tähän tulostukset ja jatkokyselyt*/
+									int i= 0;
+									// Tulostetaan tehtävän kuvaus:
+									try {
+									 while (tehtavalista.next()) {
+										i++;
+				                                            System.out.println (tehtavalista.getString(i));
+				                                        }
+				                                    }
+				                                    catch (SQLException e) {
+				                                        System.out.println("Tapahtui virhe.");
+				                                    }
 
 								}
 							}
