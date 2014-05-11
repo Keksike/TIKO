@@ -36,28 +36,28 @@ public class TietokantaToiminnot {
     public boolean avaaYhteys(){
 
 
-    // Vaihe 1: tietokanta-ajurin lataaminen
-    try {
-        Class.forName(AJURI);
-    } catch (ClassNotFoundException e) {
-        System.out.println("Ajurin lataaminen ei onnistunut. Lopetetaan ohjelman suoritus.");
-        e.printStackTrace();
-        return false;
-    }
+        // Vaihe 1: tietokanta-ajurin lataaminen
+        try {
+            Class.forName(AJURI);
+        } catch (ClassNotFoundException e) {
+            System.out.println("Ajurin lataaminen ei onnistunut. Lopetetaan ohjelman suoritus.");
+            e.printStackTrace();
+            return false;
+        }
 
-    // Vaihe 2: yhteyden ottaminen tietokantaan
-    con = null;
-    try {
-        con = DriverManager.getConnection(PROTOKOLLA + "//" + PALVELIN + ":" + PORTTI + "/" + TIETOKANTA, KAYTTAJA, SALASANA);
+        // Vaihe 2: yhteyden ottaminen tietokantaan
+        con = null;
+        try {
+            con = DriverManager.getConnection(PROTOKOLLA + "//" + PALVELIN + ":" + PORTTI + "/" + TIETOKANTA, KAYTTAJA, SALASANA);
         
-        stmt = con.createStatement();
+            stmt = con.createStatement();
 
-    // Toiminta mahdollisessa virhetilanteessa
-    } catch (SQLException e) {
-        System.out.println("Tapahtui seuraava virhe: " + e.getMessage());
-        e.printStackTrace();
-        return false;
-    }
+        // Toiminta mahdollisessa virhetilanteessa
+        } catch (SQLException e) {
+            System.out.println("Tapahtui seuraava virhe: " + e.getMessage());
+            e.printStackTrace();
+            return false;
+        }
 
         return true;
 
