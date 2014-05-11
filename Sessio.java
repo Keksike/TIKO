@@ -105,7 +105,7 @@ public class Sessio {
       //Käydään listan tehtävät läpi
       for (int i = 0; i < tlPituus; i++){
          
-         tehtavalista = db.haeTehtava(tlNro, i);
+         tehtavalista = db.haeTehtava(i, tlNro);
          /*tähän tulostukset ja jatkokyselyt*/
          
          int j = 0;
