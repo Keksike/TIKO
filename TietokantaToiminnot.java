@@ -39,8 +39,9 @@ public class TietokantaToiminnot {
     // Vaihe 1: tietokanta-ajurin lataaminen
     try {
         Class.forName(AJURI);
-    } catch (ClassNotFoundException poikkeus) {
+    } catch (ClassNotFoundException e) {
         System.out.println("Ajurin lataaminen ei onnistunut. Lopetetaan ohjelman suoritus.");
+        e.printStackTrace();
         return false;
     }
 
@@ -74,9 +75,9 @@ public class TietokantaToiminnot {
                 stmt.close(); // Sulkee myös tulosjoukon    
                 return true;
 
-            } catch(SQLException poikkeus) {
+            } catch(SQLException e) {
                 System.out.println("Yhteyden sulkeminen tietokantaan ei onnistunut. Lopetetaan ohjelman suoritus.");
-
+                e.printStackTrace();
                 return false; //null
             }
 
@@ -97,8 +98,9 @@ public class TietokantaToiminnot {
             String lause = "SELECT id, kuvaus FROM tehtavalista WHERE id = " + listaNro + ";";
             rs = lahetaKysely(lause);
 
-        } catch (Exception poikkeus) {
-            System.out.println(VIRHE);
+        } catch (Exception e) {
+            System.out.println("Tehtävälistan haussa tapahtui virhe.");
+            e.printStackTrace();
             return null;
         }
 
@@ -119,8 +121,9 @@ public class TietokantaToiminnot {
 
         rs = lahetaKysely(lause);
 
-        } catch (Exception poikkeus) {
-            System.out.println(VIRHE);
+        } catch (Exception e) {
+            System.out.println("Tehtävän haussa tapahtui virhe.");
+            e.printStackTrace();
             return null;
         }
         
@@ -140,8 +143,9 @@ public class TietokantaToiminnot {
 
         rs = lahetaKysely(lause);
 
-        } catch (Exception poikkeus) {
-            System.out.println(VIRHE);
+        } catch (Exception e) {
+            System.out.println("Esimerkkikannan haussa tapahtui virhe.");
+            e.printStackTrace();
             return null;
         }
 
@@ -164,6 +168,9 @@ public class TietokantaToiminnot {
       
         return palautus;
         */
+
+        /*PLACEHOLDER:*/
+        return 0;
     }
 
     //Laheta Kysely
@@ -218,7 +225,7 @@ public class TietokantaToiminnot {
                 se.printStackTrace();
                 return false;
             }catch(Exception e){
-                se.printStackTrace();
+                e.printStackTrace();
                 return false;
             }
         }
@@ -355,8 +362,9 @@ public class TietokantaToiminnot {
 
             return false;
 
-        }catch(SQLException poikkeus){
-            System.out.println(VIRHE);
+        }catch(SQLException e){
+            System.out.println("Tehtävän olemassaolon tarkistuksen aikana tapahtui virhe.");
+            e.printStackTrace();
             return false;
         }
     }
@@ -377,8 +385,9 @@ public class TietokantaToiminnot {
         }
         return false;
 
-        }catch(SQLException poikkeus){
-            System.out.println(VIRHE);
+        }catch(SQLException e){
+            System.out.println("Käyttäjän olemassaolon tarkistuksen aikana tapahtui virhe.");
+            e.printStackTrace();
             return false;
         }
     }
@@ -395,8 +404,9 @@ public class TietokantaToiminnot {
             }
             return 0;
 
-        }catch(SQLException poikkeus){
-            System.out.println(VIRHE);
+        }catch(SQLException e){
+            System.out.println("Käyttäjän oikeuksien haun aikana tapahtui virhe");
+            e.printStackTrace();
             return 0;
         }
     }
@@ -428,8 +438,9 @@ public class TietokantaToiminnot {
 
             return uusiID;
 
-        }catch(SQLException poikkeus){
-            System.out.println("Tapahtui bugi.");
+        }catch(SQLException e){
+            System.out.println("Session tallenuksessa tapahtui bugi.");
+            e.printStackTrace();
             return 0;
         }
     }

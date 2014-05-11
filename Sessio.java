@@ -5,6 +5,8 @@ public class Sessio {
    
     private final String VIRHE = "Tapahtui virhe.";
     private TietokantaToiminnot db;
+
+    private int kayttajatunnus;
    
     public void suoritaSessio(){
         tulostaOtsikko();
@@ -67,17 +69,18 @@ public class Sessio {
                             numeroOK = true;
 
                             //aloittaa session, eli luo sessiotauluun uuden entryn
-                            db.aloitaSessio(kayttajatunnus, tehtavaListaNumero);
+                            //sessioID:hen tallennetaan uuden session ID
+                            int sessioID = db.aloitaSessio(kayttajatunnus, tehtavaListaNumero);
 
                             suoritaTLista(tehtavaListaNumero);
 
                             //lopettaa session, eli päivittää äskettäin luotuun sessio-entryyn lopetusajan
                             //tästä puuttuu vielä yritysten lkm, joka täytyy tallentaa suoritaTListassa.
-                            db.lopetaSessio();
+                            db.lopetaSessio(sessioID);
                            
                         }
                         else{
-                            System.out.println("Virheellinen valinta.");
+                            System.out.println("Virheellinen valinta. Yritä uudelleen.");
                         }
                    }
                 }
@@ -151,7 +154,8 @@ public class Sessio {
                 }
             }
             catch (SQLException e) {
-                System.out.println(VIRHE);
+                System.out.println("Tehtävän hakemisessa tapahtui virhe.");
+                e.printStackTrace();
             }
             */
             //Kolme yritystä ratkaista tehtävä
@@ -200,8 +204,6 @@ public class Sessio {
    
     //Kirjaa käyttäjän sisään
     public boolean kirjaus(){
-      
-        int kayttajatunnus = 0;
       
         System.out.println("Käyttäjätunnus:");
         kayttajatunnus = In.readInt();
