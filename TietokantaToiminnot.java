@@ -19,16 +19,16 @@ public class TietokantaToiminnot {
 
 	  // tietokannan ja käyttäjän tiedot
 
-	private static final String AJURI = "org.postgresql.Driver";
-	private static final String PROTOKOLLA = "jdbc:postgresql:";
-	private static final String PALVELIN = "dbstud.sis.uta.fi";
-	private static final int PORTTI = 5432;
-	private static final String TIETOKANTA = "tiko2014db29";  // tähän oma käyttäjätunnus
-	private static final String KAYTTAJA = "";  // tähän oma käyttäjätunnus
-	private static final String SALASANA = "";  // tähän tietokannan salasana
+	private final String AJURI = "org.postgresql.Driver";
+	private final String PROTOKOLLA = "jdbc:postgresql:";
+	private final String PALVELIN = "dbstud.sis.uta.fi";
+	private final int PORTTI = 5432;
+	private final String TIETOKANTA = "tiko2014db29";  // tähän oma käyttäjätunnus
+	private final String KAYTTAJA = "";  // tähän oma käyttäjätunnus
+	private final String SALASANA = "";  // tähän tietokannan salasana
 
-	private static Connection con;
-	private static Statement stmt;
+	private Connection con;
+	private Statement stmt;
 
 	//Yhteyden avaaminen
 	public boolean avaaYhteys(){
@@ -87,7 +87,7 @@ public class TietokantaToiminnot {
 
 
 	//Haetaan tehtavalista
-	public static ResultSet haeTehtLista(int listaNro){
+	public ResultSet haeTehtLista(int listaNro){
 
 		ResultSet rs = null; // Kyselyn tulokset
 
@@ -107,7 +107,7 @@ public class TietokantaToiminnot {
 	}
 
 	//Haetaan tehtävä
-	public static ResultSet haeTehtava(int tehtNro, int tehtLista){
+	public ResultSet haeTehtava(int tehtNro, int tehtLista){
 
 		ResultSet rs = null; // Kyselyn tulokset
 		try {            
@@ -148,9 +148,20 @@ public class TietokantaToiminnot {
 		return rs; //Palautetaan tulosjoukko
 
 	}
+   //Hakee tehtävälistan tehtävien lukumäärän
+   public int haeTLkm(int tehtavaSarja){
+      
+      ResultSet rs = lahetaKysely("KYSELY TÄNNE");
+      
+      /*
+         Käsitellään kyselyn tulos
+      */
+      
+      return 0;
+   }
 
 	//Laheta Kysely
-	public static ResultSet lahetaKysely(String kysely){
+	public ResultSet lahetaKysely(String kysely){
 
 		ResultSet rs = null; // Kyselyn tulokset
 
@@ -184,7 +195,7 @@ public class TietokantaToiminnot {
 	}
 
 	//Tarkistaa kyselyn syntaksivirheiden varalta
-	public static boolean tarkistaSyntaksi(String kysely){
+	public boolean tarkistaSyntaksi(String kysely){
 
 		char merkki;
 		int avausLaskuri = 0;
@@ -281,7 +292,7 @@ public class TietokantaToiminnot {
 	}
 
 	/*Parametrinä tehtävälistan id*/
-	public static boolean onkoTehtavalistaOlemassa(int id){
+	public boolean onkoTehtavalistaOlemassa(int id){
 
 		try {
 
@@ -303,7 +314,7 @@ public class TietokantaToiminnot {
 		}
 	}
 
-	public static boolean onkoTehtavaOlemassa(int id){
+	public boolean onkoTehtavaOlemassa(int id){
 		try{
 
 			final String tehtavaTarkistus = "SELECT count(*) FROM tehtava WHERE id = " + id + ";";
@@ -325,7 +336,7 @@ public class TietokantaToiminnot {
 	}
 
 	/*Parametrinä käyttäjätunnus, eli id*/
-	public static boolean onkoKayttajaOlemassa(int id){
+	public boolean onkoKayttajaOlemassa(int id){
 
 		try{
 
@@ -347,7 +358,7 @@ public class TietokantaToiminnot {
 	}
 
 	/*palauttaa 0 jos ei löydy*/
-	public static int haeOikeudet(int id){
+	public int haeOikeudet(int id){
 
 		try{
 
@@ -368,7 +379,7 @@ public class TietokantaToiminnot {
 	}
 
 	/*Parametrinä käyttäjätunnus: k_id ja tehtävälistatunnus: t_id*/
-	public static int aloitaSessio(int k_id, int t_id){
+	public int aloitaSessio(int k_id, int t_id){
 
 		try{
 
@@ -403,7 +414,7 @@ public class TietokantaToiminnot {
 	}
 
 	/*hakee ja palauttaa tämänhetkisen ajan, eli pelkän ajan, ei pvm*/
-    public static java.sql.Time haeAika(){
+    public java.sql.Time haeAika(){
         java.util.Date a = new java.util.Date();
         long aikaL = a.getTime();
 
