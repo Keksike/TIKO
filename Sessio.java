@@ -1,7 +1,4 @@
-
-
 import java.sql.*;
-import java.util.Scanner;
 
 
 public class Sessio {
@@ -148,18 +145,18 @@ public class Sessio {
             }
             */
             //Kolme yritystä ratkaista tehtävä
-            suoritettu = false;
-            while (!suoriettu){
+            boolean suoritettu = false;
+            while (!suoritettu){
                 //Pyydetään käyttäjältä vastaus ja lähetetään kysely
                 kysely = In.readString();
-                tulos = lahetaKysely(kysely);
+                tulos = db.lahetaKysely(kysely);
                 
                 /*
                     vastaus = HAE VASTAUS
                 */
                 
                 // Verrataan käyttäjän kyselyn tuloskai vastaukseen
-                oikein = vertaaTulokset(tulos, vastaus);
+                oikein = db.vertaaTulokset(tulos, vastaus);
                 // Väärällä vastauksella toistetaan ja lisätään väärälaskuria...
                 if(!oikein){
                 
@@ -173,7 +170,7 @@ public class Sessio {
                     }
                 //... ja oikealla vastauksella siirrytään seuraavaan ja nollataan väärät
                 }else{
-                    System.our.println("Oikea vastaus. Siirrytään seuraavaan tehtävään.");
+                    System.out.println("Oikea vastaus. Siirrytään seuraavaan tehtävään.");
                     vaarin = 0;
                     suoritettu = true;
                 }
