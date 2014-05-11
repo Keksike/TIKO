@@ -26,15 +26,12 @@ public class TietokantaToiminnot {
     private final String TIETOKANTA = "tiko2014db29";  // tähän oma käyttäjätunnus
     private final String KAYTTAJA = "cb96337";  // tähän oma käyttäjätunnus
     private final String SALASANA = "";  // tähän tietokannan salasana
-   
-    private final String VIRHE = "Tapahtui virhe.";
 
     private Connection con;
     private Statement stmt;
 
     //Yhteyden avaaminen
     public boolean avaaYhteys(){
-
 
         // Vaihe 1: tietokanta-ajurin lataaminen
         try {
@@ -54,7 +51,7 @@ public class TietokantaToiminnot {
 
         // Toiminta mahdollisessa virhetilanteessa
         } catch (SQLException e) {
-            System.out.println("Tapahtui seuraava virhe: " + e.getMessage());
+            System.out.println("Yhteyden avaamisessa tapahtui seuraava virhe: " + e.getMessage());
             e.printStackTrace();
             return false;
         }
@@ -197,8 +194,9 @@ public class TietokantaToiminnot {
                 }
 
             // Toiminta mahdollisessa virhetilanteessa
-            } catch (SQLException poikkeus) {
-                System.out.println("Tapahtui seuraava virhe: " + poikkeus.getMessage());     
+            } catch (SQLException e) {
+                System.out.println("Kyselyn lähetyksessä tapahtui seuraava virhe: " + e.getMessage());
+                e.printStackTrace();
                 return null;
             }
 
@@ -318,8 +316,10 @@ public class TietokantaToiminnot {
                 return palautus;
             }
         }
-        catch (SQLException poikkeus) {
-            System.out.println("Tapahtui seuraava virhe: " + poikkeus.getMessage());     
+        catch (SQLException e) {
+            System.out.println("Tulosten vertauksessa tapahtui seuraava virhe: " + e.getMessage());
+            e.printStackTrace();
+            return false;  
         }       
 
         return palautus;
@@ -343,8 +343,9 @@ public class TietokantaToiminnot {
 
         return false;
 
-        }catch(SQLException poikkeus){
-            System.out.println(VIRHE);
+        }catch(SQLException e){
+            System.out.println("Tehtävälistan olemassaolon tarkistuksessa tapahtui virhe.");
+            e.printStackTrace();
             return false;
         }
     }

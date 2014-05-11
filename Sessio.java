@@ -1,4 +1,5 @@
 import java.sql.*;
+/*java -classpath /usr/share/java/postgresql.jar:. TIKO*/
 
 
 public class Sessio {
@@ -10,15 +11,15 @@ public class Sessio {
    
     public void suoritaSessio(){
         tulostaOtsikko();
-
-        //Onko käyttäjä kirjautunut sisään
-        boolean kirjautunut = false; 
       
         //Avataan db yhteys, jos epäonnistuu lopetetaan
         TietokantaToiminnot db = new TietokantaToiminnot();
         if(!db.avaaYhteys()){
             return;
         }
+
+        //Onnistuuko käyttäjän kirjautuminen
+        boolean kirjautunut = false; 
       
         //Kysytään käyttäjältä tunnuksia kunnes kirjautuminen onnistuu
         while(!kirjautunut){
@@ -211,7 +212,6 @@ public class Sessio {
         if(!db.onkoKayttajaOlemassa(kayttajatunnus)){ //jos arvoa ei löytynyt
             System.out.println("Käyttäjätunnusta ei löytynyt. Yritä uudelleen.");
             return false;
-
         }else{
             System.out.println("Sisäänkirjautuminen onnistui!");
             return true;
