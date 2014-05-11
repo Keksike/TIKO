@@ -65,7 +65,15 @@ public class Sessio {
                         if(db.onkoTehtavalistaOlemassa(tehtavaListaNumero)){
 
                             numeroOK = true;
+
+                            //aloittaa session, eli luo sessiotauluun uuden entryn
+                            db.aloitaSessio(kayttajatunnus, tehtavaListaNumero);
+
                             suoritaTLista(tehtavaListaNumero);
+
+                            //lopettaa session, eli päivittää äskettäin luotuun sessio-entryyn lopetusajan
+                            //tästä puuttuu vielä yritysten lkm, joka täytyy tallentaa suoritaTListassa.
+                            db.lopetaSessio();
                            
                         }
                         else{
