@@ -24,7 +24,7 @@ public class TietokantaToiminnot {
     private final String PALVELIN = "dbstud.sis.uta.fi";
     private final int PORTTI = 5432;
     private final String TIETOKANTA = "tiko2014db29";  // tähän oma käyttäjätunnus
-    private final String KAYTTAJA = "";  // tähän oma käyttäjätunnus
+    private final String KAYTTAJA = "cb96337";  // tähän oma käyttäjätunnus
     private final String SALASANA = "";  // tähän tietokannan salasana
    
     private final String VIRHE = "Tapahtui virhe.";
@@ -53,8 +53,9 @@ public class TietokantaToiminnot {
         stmt = con.createStatement();
 
     // Toiminta mahdollisessa virhetilanteessa
-    } catch (SQLException poikkeus) {
-        System.out.println("Tapahtui seuraava virhe: " + poikkeus.getMessage());
+    } catch (SQLException e) {
+        System.out.println("Tapahtui seuraava virhe: " + e.getMessage());
+        e.printStackTrace();
         return false;
     }
 
@@ -229,6 +230,7 @@ public class TietokantaToiminnot {
                 return false;
             }
         }
+        return false;
     }
 
     //Tarkistaa kyselyn syntaksivirheiden varalta

@@ -15,7 +15,7 @@ public class Sessio {
         boolean kirjautunut = false; 
       
         //Avataan db yhteys, jos epäonnistuu lopetetaan
-        db = new TietokantaToiminnot();
+        TietokantaToiminnot db = new TietokantaToiminnot();
         if(!db.avaaYhteys()){
             return;
         }
