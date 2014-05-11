@@ -64,18 +64,12 @@ public class Sessio {
 
                   System.out.println("Anna tehtävälistan numero:");
                   int tehtavaListaNumero = In.readInt();
-
+                     //Jos tehtavalista löytyy, suoritetaan se
                   if(db.onkoTehtavaOlemassa(tehtavaListaNumero)){
 
                      numeroOK = true;
-                     
-                     //Jos tehtavalista löytyy, suoritetaan se
-                     if(db.onkoTehtavalistaOlemassa(tehtavaListaNumero)){
+                     suoritaTLista(tehtavaListaNumero);
 
-                        numeroOK = true;
-                        suoritaTLista(tehtavaListaNumero);
-                        
-                     }
                   }
                }
             }
