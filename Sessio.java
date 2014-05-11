@@ -7,6 +7,8 @@ public class Sessio {
     private TietokantaToiminnot db;
    
     public void suoritaSessio(){
+        tulostaOtsikko();
+
         //Onko käyttäjä kirjautunut sisään
         boolean kirjautunut = false; 
       
@@ -204,5 +206,20 @@ public class Sessio {
             System.out.println("Sisäänkirjautuminen onnistui!");
             return true;
         }
+    }
+
+    /*oli tylsää, ajatus ei kulkenut*/
+    public void tulostaOtsikko(){
+        System.out.println("---------------------------------");
+        System.out.println("######## #### ##    ##  #######  ");
+        System.out.println("   ##     ##  ##   ##  ##     ## ");
+        System.out.println("   ##     ##  ##  ##   ##     ## ");
+        System.out.println("   ##     ##  #####    ##     ## ");
+        System.out.println("   ##     ##  ##  ##   ##     ## ");
+        System.out.println("   ##     ##  ##   ##  ##     ## ");
+        System.out.println("   ##    #### ##    ##  #######  ");
+        System.out.println("---------------------------------");
+        System.out.println("By: Ossi Puustinen, Jenni Mansikka-Aho & Cihan Bebek");
+        System.out.println("---------------------------------");
     }
 }

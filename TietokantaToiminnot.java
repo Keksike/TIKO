@@ -200,6 +200,30 @@ public class TietokantaToiminnot {
         }
     }
 
+    /*Metodi lähettää parametrina annetun SQL-INSERT:in tai UPDATE:n
+    * Palauttaa true lähetys onnistuu, palauttaa false jos ei onnistu
+    */
+    public boolean lahetaKasky(String kaskySQL){
+
+        if(tarkistaSyntaksi(kaskySQL)){
+            try{
+                stmt = con.createStatement();
+
+                stmt.executeUpdate(kaskySQL);
+
+                System.out.println("Tietokanta päivitetty.");
+
+                return true;
+            }catch(SQLException se){
+                se.printStackTrace();
+                return false;
+            }catch(Exception e){
+                se.printStackTrace();
+                return false;
+            }
+        }
+    }
+
     //Tarkistaa kyselyn syntaksivirheiden varalta
     public boolean tarkistaSyntaksi(String kysely){
 
@@ -378,6 +402,7 @@ public class TietokantaToiminnot {
     }
 
     /*Parametrinä käyttäjätunnus: k_id ja tehtävälistatunnus: t_id*/
+    /*Palauttaapi uuden session ID:n. Jos bugaa palauttaa 0.*/
     public int aloitaSessio(int k_id, int t_id){
 
         try{
@@ -386,29 +411,41 @@ public class TietokantaToiminnot {
             ResultSet rs = lahetaKysely("SELECT max(id) FROM sessio;");
 
             //tähän tallennetaan uusi ID
-            int uusiID = 0;
+            int uusiID = 1;
 
-            if(rs.next()){
-                //kasvatetaan ID:tä yhellä
+            if(rs.next()){ //jos vanhaa ID:tä ei löydy, ID on 1
+                //kasvatetaan vanhaa isointa ID:tä yhellä, niin saadaan uusi ID
                 uusiID = rs.getInt(1)+1;
-
             }
+
             //ja tähän tämän hetken aika
             java.sql.Time aika = haeAika();
 
-            //puuttuu tuo yristen numero
-            //puuttuu osaa
-            String sessioAloitus = "INSERT INTO sessio VALUES (" + uusiID + ", " + k_id + ", " + t_id + ", " + aika + ", " + aika + ");";
+            //puuttuu yritysten nro
+            String sessioAloitus = "INSERT INTO sessio (id, kayt_id, suoritettu_teht_lista, sessio_alku, sessio_loppu) VALUES (" + uusiID + ", " + k_id + ", " + t_id + ", " + aika + ", " + aika + ");";
 
-            if(rs.next()){
-                return rs.getInt(1);
-            }
-            return 0;
+            lahetaKasky(sessioAloitus);
+
+            return uusiID;
 
         }catch(SQLException poikkeus){
-            System.out.println(VIRHE);
+            System.out.println("Tapahtui bugi.");
             return 0;
         }
+    }
+
+    /*
+    * Metodi asettaa session lopetusajaksi tämänhetkisen ajan.
+    * Parametrina annetaan session id: s_id
+    * Palauttaa true jos session loeptus onnistuu, false jos ei
+    */
+    public boolean lopetaSessio(int s_id){
+
+        java.sql.Time aika = haeAika();
+
+        String sessioLopetusSQL = "UPDATE sessio SET sessio_loppu = " + aika + " WHERE id = " + s_id;
+
+        return lahetaKasky(sessioLopetusSQL);
     }
 
     /*hakee ja palauttaa tämänhetkisen ajan, eli pelkän ajan, ei pvm*/
