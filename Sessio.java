@@ -60,7 +60,7 @@ public class Sessio {
 						System.out.println("Anna tehtävälistan numero:");
 						int tehtavaListaNumero = In.readInt();
 						//Jos tehtavalista löytyy, suoritetaan se
-						if(db.onkoTehtavaOlemassa(tehtavaListaNumero)){
+						if(db.onkoTehtavalistaOlemassa(tehtavaListaNumero)){
 							numeroOK = true;
 							suoritaTLista(tehtavaListaNumero);
 						}
