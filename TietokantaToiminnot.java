@@ -103,8 +103,25 @@ public class TietokantaToiminnot {
         }
 
         return rs; //Palautetaan tulosjoukko
-
    }
+
+    public ResultSet haeTehtListat(){
+        ResultSet rs = null;
+
+        try{
+            rs = lahetaKysely("SELECT * FROM tehtavalista;");
+            
+            if(rs == null){
+                System.out.println("Tehtävälistoja ei löytynyt.");
+            }
+
+            return rs;
+        }catch(Exception e){
+            System.out.println("Tehtävälistojen haussa tapahtui virhe");
+            e.printStackTrace();
+            return null;
+        }
+    }
 
     //Haetaan tehtävä
     public ResultSet haeTehtava(int tehtNro, int tehtLista){
@@ -181,15 +198,8 @@ public class TietokantaToiminnot {
                 stmt = con.createStatement();
 
                 // Tarkistetaan onko kyselyssä syntaksivirheitä
-                if(tarkistaSyntaksi(kysely)){
-
-                    rs = stmt.executeQuery(kysely);
-                    return rs;
-
-                }else {
-                    rs = null;
-                    return rs;
-                }
+                rs = stmt.executeQuery(kysely);
+                return rs;
 
             // Toiminta mahdollisessa virhetilanteessa
             } catch (SQLException e) {
@@ -284,15 +294,13 @@ public class TietokantaToiminnot {
                 tulos = rs.getString(i);
                 vastaus = esim.getString(i);
 
-                if(!(tulos.equals(vastaus))){
+                if(!tulos.equals(vastaus)){
                     palautus = false;
                 }
-
             }
 
             //Vastaus oli väärä.
             if (palautus == false) {
-             
                 System.out.println("Kyselyssä oli looginen virhe.\nVastauksesi palautti tuloksen:\n");
              
                 i = 0;
@@ -300,7 +308,6 @@ public class TietokantaToiminnot {
                 while(rs.next()){
                     i++;
                     System.out.println(rs.getString(i));
-        
                 }
 
                 System.out.println("Kyselyn tulisi tuottaa tulos:\n");
@@ -311,17 +318,16 @@ public class TietokantaToiminnot {
                     i++;
                     System.out.println(esim.getString(i));
                 }
+
                 return palautus;
             }
-        }
-        catch (SQLException e) {
+        }catch (SQLException e) {
             System.out.println("Tulosten vertauksessa tapahtui seuraava virhe: " + e.getMessage());
             e.printStackTrace();
             return false;  
         }       
 
         return palautus;
-
    }
 
     /*Parametrinä tehtävälistan id*/
@@ -360,14 +366,12 @@ public class TietokantaToiminnot {
                 return true;
                 }
             }
-
-            return false;
-
         }catch(SQLException e){
             System.out.println("Tehtävän olemassaolon tarkistuksen aikana tapahtui virhe.");
             e.printStackTrace();
             return false;
         }
+        return false;
     }
 
     /*Parametrinä käyttäjätunnus, eli id*/

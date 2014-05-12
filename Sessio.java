@@ -1,11 +1,12 @@
 import java.sql.*;
 /*java -classpath /usr/share/java/postgresql.jar:. TIKO*/
+/*psql tiko2014db29*/
 
 
 public class Sessio {
    
     private final String VIRHE = "Tapahtui virhe.";
-    private TietokantaToiminnot db;
+    TietokantaToiminnot db = new TietokantaToiminnot();
 
     private int kayttajatunnus;
    
@@ -13,7 +14,6 @@ public class Sessio {
         tulostaOtsikko();
       
         //Avataan db yhteys, jos epäonnistuu lopetetaan
-        TietokantaToiminnot db = new TietokantaToiminnot();
         if(!db.avaaYhteys()){
             return;
         }
@@ -31,10 +31,12 @@ public class Sessio {
 
             while(true){
                 //Tulostetaan tehtavalistat
-                tulostaListat();
+                tulostaTListat();
 
                 //Pyydetään valinta käyttäjältä ja toimitaan sen mukaan
-                System.out.println("Mikäli haluat nähdä tehtävälistan, kirjoita 1. Mikäli haluat suorittaa tehtävälistan, kirjoita 2. Lopettaaksesi kirjoita 0");
+                System.out.println("Mikäli haluat nähdä tehtävälistan, kirjoita: 1.");
+                System.out.println("Mikäli haluat suorittaa tehtävälistan, kirjoita: 2.");
+                System.out.println("Lopettaaksesi kirjoita 0");
                 int valinta = In.readInt();
                 
                 //Haetaan tehtavalista
@@ -46,12 +48,11 @@ public class Sessio {
                         System.out.println("Anna tehtävälistan numero:");
                         tehtavaListaNumero = In.readInt();
                       
-                    if(db.onkoTehtavalistaOlemassa(tehtavaListaNumero)){
+                        if(db.onkoTehtavalistaOlemassa(tehtavaListaNumero)){
 
-                        numeroOK = true;
-                        ResultSet tehtavalista = db.haeTehtLista(tehtavaListaNumero);
-                        /*tähän tulostukset*/
-                        tulostaTLista(tehtavalista);
+                            numeroOK = true;
+                            /*tähän tulostukset*/
+                            tulostaTListat();
                       
                         }
                     }
@@ -73,7 +74,7 @@ public class Sessio {
                             //sessioID:hen tallennetaan uuden session ID
                             int sessioID = db.aloitaSessio(kayttajatunnus, tehtavaListaNumero);
 
-                            suoritaTLista(tehtavaListaNumero);
+                            suoritaTLista(tehtavaListaNumero, sessioID);
 
                             //lopettaa session, eli päivittää äskettäin luotuun sessio-entryyn lopetusajan
                             //tästä puuttuu vielä yritysten lkm, joka täytyy tallentaa suoritaTListassa.
@@ -112,21 +113,21 @@ public class Sessio {
     }
    
     //Tulostaa tarjolla olevat tehtavalistat
-    public void tulostaListat(){
+    public void tulostaTListat(){
+
+        try{
       
-        ResultSet rs = db.lahetaKysely("SELECT id, kuvaus FROM tehtavalista;");
-        int j = 0;
-        /*
-        try {
-            while (rs.next()) {
-                j++;
-                System.out.println (rs.getString(j));
+            ResultSet rs = db.lahetaKysely("SELECT id, kuvaus FROM tehtavalista;");
+            int j = 0;
+
+            while(rs.next()){
+                System.out.println();
             }
+        }catch(Exception e){
+            System.out.println("Tehtävälistan tulostuksessa tapahtui virhe.");
+            e.printStackTrace();
+            return;
         }
-        catch (SQLException e) {
-            System.out.println(VIRHE);
-        }
-        */
    }
    
     //Tehtavalistan suorittaminen
@@ -187,7 +188,7 @@ public class Sessio {
                 // Väärällä vastauksella toistetaan ja lisätään väärälaskuria...
                 if(!oikein){
                 
-                    System.out.println("Vastauksesi oli väärä.");
+                    System.out.println("Vastauksesi oli väärä. (Tai ohjelmassamme on virhe)");
                     vaarin++;
                     //Vääriä vastauksia on kolme, siirrytään seuraavaan
                     if(vaarin == 3){
@@ -208,7 +209,6 @@ public class Sessio {
             lisaaTiedotKantaan(tlNro, i, sessioID, vaarin + 1, olikoOikein, alkuaika, loppuaika);
             
         }
-      
     }
 
     //lisää tiedon tehtävän suorittamisesta tietokantaan
@@ -235,16 +235,22 @@ public class Sessio {
    
     //Kirjaa käyttäjän sisään
     public boolean kirjaus(){
-      
-        System.out.println("Käyttäjätunnus:");
-        kayttajatunnus = In.readInt();
+    
+        try{
+            System.out.println("Käyttäjätunnus:");
+            kayttajatunnus = In.readInt();
 
-        if(!db.onkoKayttajaOlemassa(kayttajatunnus)){ //jos arvoa ei löytynyt
-            System.out.println("Käyttäjätunnusta ei löytynyt. Yritä uudelleen.");
+            if(db.onkoKayttajaOlemassa(kayttajatunnus)){ //jos arvoa ei löytynyt
+                System.out.println("Sisäänkirjautuminen onnistui!");
+                return true;
+            }else{
+                System.out.println("Käyttäjätunnusta ei löytynyt. Yritä uudelleen.");
+                return false;
+            }
+        }catch(Exception e){
+            System.out.println("Käyttäjätunnuksen tarkistuksessa tapahtui virhe.");
+            e.printStackTrace();
             return false;
-        }else{
-            System.out.println("Sisäänkirjautuminen onnistui!");
-            return true;
         }
     }
 
