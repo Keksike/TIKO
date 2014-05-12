@@ -229,7 +229,7 @@ public class Sessio {
         System.out.println("   ##     ##  ##   ##  ##     ## ");
         System.out.println("   ##    #### ##    ##  #######  ");
         System.out.println("---------------------------------");
-        System.out.println("By: Ossi Puustinen, Jenni Mansikka-Aho & Cihan Bebek");
+        System.out.println("By: Ossi Puustinen, Jenni Mansikka-aho & Cihan Bebek");
         System.out.println("---------------------------------");
     }
 }
