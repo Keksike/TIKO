@@ -129,48 +129,60 @@ public class Sessio {
         */
    }
    
-   
     //Tehtavalistan suorittaminen
-    public void suoritaTLista(int tlNro){
+    public void suoritaTLista(int tlNro, int sessioID){
       
         ResultSet tehtava = null; //Käsiteltävä tehtävä
         ResultSet vastaus = null;   //Oikea vastaus
         ResultSet tulos = null; //Kayttajan kyselyn tulos
+        String vastausKysely = null;
         String kysely = null; // Kayttajan antama kysely
         boolean oikein = false; //Oliko kysely oikein
+        boolean suoritettu = false; //Onko tehtävä suoritetttu
         int j = 0; //Laskuri
         int vaarin = 0; //Vaarien vastauksien määrä
         int tlPituus = db.haeTLkm(tlNro); //Tehtavalistan pituus
+        java.sql.Time alkuaika = null;
+        java.sql.Time loppuaika = null;
+        int olikoOikein = 0;
       
         //Käydään listan tehtävät läpi
         for (int i = 1; i < tlPituus; i++){
             //Haetaan suoritettava tehtava
             tehtava = db.haeTehtava(tlNro, i);
             // Tulostetaan tehtävän kuvaus:
-            /*
             try {
-                while (tehtava.next()) {
-                    j++;
-                    System.out.println (tehtava.getString(j));
-                }
+                tehtava.next();
+                System.out.println (tehtava.getString(2));
             }
             catch (SQLException e) {
                 System.out.println("Tehtävän hakemisessa tapahtui virhe.");
                 e.printStackTrace();
             }
-            */
+
+            //Kirjataan tehtävän aloituksen aika
+            alkuaika = db.haeAika();
+
             //Kolme yritystä ratkaista tehtävä
-            boolean suoritettu = false;
+            suoritettu = false;
             while (!suoritettu){
                 //Pyydetään käyttäjältä vastaus ja lähetetään kysely
                 kysely = In.readString();
                 tulos = db.lahetaKysely(kysely);
                 
-                /*
-                    vastaus = HAE VASTAUS
-                */
-                
-                // Verrataan käyttäjän kyselyn tuloskai vastaukseen
+                //Haetaan oikea vastaus kyselyyn
+                try{
+                    vastaus = db.lahetaKysely("SELECT esim_vastaus FROM tehtava WHERE id = " + i + ";");
+                    vastaus.next();
+                    vastausKysely = vastaus.getString(1);
+                    vastaus = db.lahetaKysely(vastausKysely);
+                }
+                catch (SQLException e) {
+                    System.out.println("VIRHE");
+                    e.printStackTrace();
+                }
+
+                // Verrataan käyttäjän kyselyn tulosta vastaukseen
                 oikein = db.vertaaTulokset(tulos, vastaus);
                 // Väärällä vastauksella toistetaan ja lisätään väärälaskuria...
                 if(!oikein){
@@ -180,6 +192,7 @@ public class Sessio {
                     //Vääriä vastauksia on kolme, siirrytään seuraavaan
                     if(vaarin == 3){
                         vaarin = 0;
+                        olikoOikein = 0;
                         System.out.println("Vastasit väärin kolmesti. Siirrytään seuraavaan tehtävään.");
                         suoritettu = true;
                     }
@@ -187,20 +200,37 @@ public class Sessio {
                 }else{
                     System.out.println("Oikea vastaus. Siirrytään seuraavaan tehtävään.");
                     vaarin = 0;
+                    olikoOikein = 1;
                     suoritettu = true;
                 }
             }
-            /*
-            - Vastaanotetaan vastaus
-            - Tarkistetaan vastaus
-            - Lahetataan vastaus
-            - Verrataan tuloksia
-
-            - Merkitään tiedot suorituksesta
-            */
-      
+            loppuaika = db.haeAika();
+            lisaaTiedotKantaan(tlNro, i, sessioID, vaarin + 1, olikoOikein, alkuaika, loppuaika);
+            
         }
       
+    }
+
+    //lisää tiedon tehtävän suorittamisesta tietokantaan
+    public void lisaaTiedotKantaan(int tlNro, int tehtavaNro, int sessioID, int yritykset, int oikein, java.sql.Time alkuaika, java.sql.Time loppuaika){
+
+        int tehtavaID = 0;
+        //Haetaan tehtavan ID
+        ResultSet tID = db.lahetaKysely("SELECT kuuluu.tehtava_id FROM tehtava INNER JOIN on kuuluu ON tehtava.id = kuuluu.tehtava_id INNER JOIN tehtavalista ON kuuluu.tehtavalista_id" +
+            " = tehtavalista.id WHERE kuuluu.nro = " + tehtavaNro + " AND tehtavalista.id = " + tlNro + ";");
+
+        //Noudetaan se resultsetistä
+        try{
+            tID.next();
+            tehtavaID = tID.getInt(1); 
+        }
+        catch (SQLException e) {
+            System.out.println("Tehtävän hakemisessa tapahtui virhe.");
+            e.printStackTrace();
+        }
+        //Merkitään tiedot yrityksestä sessioon
+        db.lahetaKysely("INSERT INTO tehdaan (tehtava_id, sessio_id, yritys_nro, oliko_oikein, alku, loppu) VALUES (" + tehtavaID + ", " + sessioID + ", " + yritykset + ", " + oikein + ", " + alkuaika + ", " + loppuaika + ");");
+
     }
    
     //Kirjaa käyttäjän sisään
