@@ -1,7 +1,7 @@
 /*
 * TIKO-kurssin harjoitustyön pääluokka
 *
-* author: Jenni Mansikka-Aho, Ossi Puustinen & Cihan Bebek
+* author: Jenni Mansikka-aho, Ossi Puustinen & Cihan Bebek
 */
 
 
