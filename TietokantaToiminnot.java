@@ -25,7 +25,7 @@ public class TietokantaToiminnot {
     private final int PORTTI = 5432;
     private final String TIETOKANTA = "tiko2014db29";  // tähän oma käyttäjätunnus
     private final String KAYTTAJA = "cb96337";  // tähän oma käyttäjätunnus
-    private final String SALASANA = "";  // tähän tietokannan salasana
+    private final String SALASANA = "lol";  // tähän tietokannan salasana
 
     private Connection con;
     private Statement stmt;
