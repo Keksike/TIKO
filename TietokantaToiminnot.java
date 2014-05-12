@@ -287,7 +287,7 @@ public class TietokantaToiminnot {
         i = 0;
         palautus = true;
         try {
-            while(rs.next() | esim.next()){
+            while(rs.next() & esim.next()){
              
                 i++;
              
