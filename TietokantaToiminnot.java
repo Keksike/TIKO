@@ -150,25 +150,23 @@ public class TietokantaToiminnot {
         return rs; //Palautetaan tulosjoukko
 
    }
-    //Hakee tehtävälistan tehtävien lukumäärän
+    //Hakee tehtävälistan tehtävien lukumäärän *KYSEENALAINEN*
     public int haeTLkm(int tLista){
       
         int palautus = 0;
         ResultSet rs = lahetaKysely("SELECT teht_lkm FROM tehtavalista WHERE id = " + tLista + ";");
-        /*
+        
         try{
-            palautus = rs.getInt("teht_lkm");
+            rs.next();
+            palautus = rs.getInt(1);
         }
         catch (SQLException e) {
-            System.out.println(VIRHE);
+            System.out.println("Virhe");
             return 0;
         }
       
         return palautus;
-        */
 
-        /*PLACEHOLDER:*/
-        return 0;
     }
 
     //Laheta Kysely
