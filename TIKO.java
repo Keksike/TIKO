@@ -13,11 +13,10 @@ public class TIKO {
     	tulostaOtsikko();
         Sessio sessio = new Sessio();
         sessio.suoritaSessio();
-        hyvastele();
     }
 
     /*oli tylsää, ajatus ei kulkenut*/
-    public static void tulostaOtsikko(){
+    public static void otsikko(){
         System.out.println("---------------------------------");
         System.out.println("######## #### ##    ##  #######  ");
         System.out.println("   ##     ##  ##   ##  ##     ## ");
@@ -31,16 +30,24 @@ public class TIKO {
         System.out.println("---------------------------------");
     }
     //olkaa hyvä <3
-    public static void hyvastele(){
+    public static void tulostaOtsikko(){
 
-        System.out.println("---------------------------------------------------------------------");
-        System.out.println("########   #######  ##########     #######  ##    ##  ##  ########## ");
-        System.out.println("##        ##     ##     ##         ##       ##    ##  ##      ##     ");
-        System.out.println("##        ##     ##     ##         ##       ##    ##  ##      ##     ");
-        System.out.println("########  #########     ##         #######  ########  ##      ##     ");
-        System.out.println("##        ##     ##     ##              ##  ##    ##  ##      ##     ");
-        System.out.println("##        ##     ##     ##              ##  ##    ##  ##      ##     ");
-        System.out.println("########  ##     ##     ##         #######  ##    ##  ##      ##     ");
-        System.out.println("---------------------------------------------------------------------");    	
+        System.out.println("----------------------------------------------------------------------------------------------------------------------------");
+        System.out.println("                                                                                                                            ");
+        System.out.println("                                     ##################################################                                     ");
+        System.out.println("                           ######################################################################                           ");
+        System.out.println("                       ########                                                               #######                       ");
+        System.out.println("                   ######                                                                         #######                   ");
+        System.out.println("                ######                                                                                ######                ");
+        System.out.println("             ######                                                                                      #####              ");
+        System.out.println("           ######           ########   #######  ##########     #######  ##    ##  ##  ##########           #####            ");
+        System.out.println("         #####              ##        ##     ##     ##         ##       ##    ##  ##      ##                 #####          ");
+        System.out.println("       ####                 ##        ##     ##     ##         ##       ##    ##  ##      ##                   #####        ");
+        System.out.println("     #####                  ########  #########     ##         #######  ########  ##      ##                    #####       ");
+        System.out.println("    ####                    ##        ##     ##     ##              ##  ##    ##  ##      ##                      ####      ");
+        System.out.println("   ####                     ##        ##     ##     ##              ##  ##    ##  ##      ##                       ####     ");
+        System.out.println("  ####                      ########  ##     ##     ##         #######  ##    ##  ##      ##                        ####    ");
+        System.out.println(" ####                                                                                                                ####   ");
+        System.out.println("----------------------------------------------------------------------------------------------------------------------------");    	
     }
 }
