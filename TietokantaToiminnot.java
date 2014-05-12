@@ -1,7 +1,7 @@
 /*
 * TIKO-kurssin harjoitustyön luokka, jossa on tietokannallinen toiminnallisuus
 *
-* author: Jenni Mansikka-Aho, Ossi Puustinen & Cihan Bebek
+* author: Jenni Mansikka-aho, Ossi Puustinen & Cihan Bebek
 *
 * Pohjana on käytetty kurssilla tarjottua JDBC esimerkkiä.
 *
