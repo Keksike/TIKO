@@ -24,8 +24,8 @@ public class TietokantaToiminnot {
     private final String PALVELIN = "dbstud.sis.uta.fi";
     private final int PORTTI = 5432;
     private final String TIETOKANTA = "tiko2014db29";  // tähän oma käyttäjätunnus
-    private final String KAYTTAJA = "op96382";  // tähän oma käyttäjätunnus
-    private final String SALASANA = "nope";  // tähän tietokannan salasana
+    private final String KAYTTAJA = "";  // tähän oma käyttäjätunnus
+    private final String SALASANA = "";  // tähän tietokannan salasana
 
     private Connection con;
     private Statement stmt;
@@ -479,7 +479,8 @@ public class TietokantaToiminnot {
             java.sql.Time aika = haeAika();
 
             //puuttuu yritysten nro
-            String sessioAloitus = "INSERT INTO sessio (id, kayt_id, suoritettu_teht_lista, sessio_alku, sessio_loppu) VALUES (" + uusiID + ", " + k_id + ", " + t_id + ", " + aika + ", " + aika + ");";
+			// id, kayt_id, suoritettu_teht_lista, sessio_alku, sessio_loppu, yritysnro
+            String sessioAloitus = "INSERT INTO sessio VALUES (" + uusiID + ", " + k_id + ", " + t_id + ", '" + aika + "', '" + aika + "', " + 1 + ");";
 
             lahetaKasky(sessioAloitus);
 
