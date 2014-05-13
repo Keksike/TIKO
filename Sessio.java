@@ -185,8 +185,8 @@ public class Sessio {
 
         int tehtavaID = 0;
         //Haetaan tehtavan ID
-        ResultSet tID = db.lahetaKysely("SELECT kuuluu.tehtava_id FROM tehtava INNER JOIN on kuuluu ON tehtava.id = kuuluu.tehtava_id INNER JOIN tehtavalista ON kuuluu.tehtavalista_id" +
-            " = tehtavalista.id WHERE kuuluu.nro = " + tehtavaNro + " AND tehtavalista.id = " + tlNro + ";");
+        ResultSet tID = db.lahetaKysely("SELECT kuuluu.tehtava_id FROM tehtava INNER JOIN kuuluu ON tehtava.id = kuuluu.tehtava_id INNER JOIN tehtavalista ON kuuluu.tehtavalista_id" +
+            " = tehtavalista.id WHERE kuuluu.tehtavanro = " + tehtavaNro + " AND tehtavalista.id = " + tlNro + ";");
 
         //Noudetaan se resultsetistä
         try{
