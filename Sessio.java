@@ -99,7 +99,6 @@ public class Sessio {
         ResultSet tulos = null; //Kayttajan kyselyn tulos
         String vastausKysely = null;
         String kysely = null; // Kayttajan antama kysely
-        boolean oikein = false; //Oliko kysely oikein
         boolean suoritettu = false; //Onko tehtävä suoritetttu
         int j = 0; //Laskuri
         int vaarin = 0; //Vaarien vastauksien määrä
@@ -152,9 +151,9 @@ public class Sessio {
                 }
 
                 // Verrataan käyttäjän kyselyn tulosta vastaukseen
-                oikein = db.vertaaTulokset(tulos, vastaus);
+                olikoOikein = db.vertaaTulokset(tulos, vastaus);
                 // Väärällä vastauksella toistetaan ja lisätään väärälaskuria...
-                if(!oikein){
+                if(!olikoOikein){
                 
                     System.out.println("Vastauksesi oli väärä. (Tai ohjelmassamme on virhe)");
                     vaarin++;
