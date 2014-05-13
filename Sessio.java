@@ -198,7 +198,7 @@ public class Sessio {
         }
         //Merkitään tiedot yrityksestä sessioon
 		//tehtava_id, sessio_id, yritys_nro, oliko_oikein, alku, loppu
-        db.lahetaKysely("INSERT INTO tehdaan VALUES (" + tehtavaID + ", " + sessioID + ", " + yritykset + ", " + oikein + ", '" + alkuaika + "', '" + loppuaika + "');");
+        db.lahetaKasky("INSERT INTO tehdaan VALUES (" + tehtavaID + ", " + sessioID + ", " + yritykset + ", " + oikein + ", '" + alkuaika + "', '" + loppuaika + "');");
 
     }
    
