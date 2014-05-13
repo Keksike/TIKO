@@ -24,8 +24,8 @@ public class TietokantaToiminnot {
     private final String PALVELIN = "dbstud.sis.uta.fi";
     private final int PORTTI = 5432;
     private final String TIETOKANTA = "tiko2014db29";  // tähän oma käyttäjätunnus
-    private final String KAYTTAJA = "";  // tähän oma käyttäjätunnus
-    private final String SALASANA = "";  // tähän tietokannan salasana
+    private final String KAYTTAJA = "cb96337";  // tähän oma käyttäjätunnus
+    private final String SALASANA = "lol";  // tähän tietokannan salasana
 
     private Connection con;
     private Statement stmt;
@@ -128,13 +128,13 @@ public class TietokantaToiminnot {
 
         ResultSet rs = null; // Kyselyn tulokset
         try {            
-        String lause = "SELECT tehtava.id, tehtava.kuvaus " + 
+            String lause = "SELECT tehtava.id, tehtava.kuvaus " + 
             "FROM tehtava, kuuluu, tehtavalista " + 
             "WHERE tehtava.id = " + tehtNro + 
             " AND tehtavalista.id = " + tehtLista + 
             " AND tehtava.id = kuuluu.tehtava_id AND kuuluu.tehtavalista_id = tehtavalista.id;";
 
-        rs = lahetaKysely(lause);
+            rs = lahetaKysely(lause);
 
         } catch (Exception e) {
             System.out.println("Tehtävän haussa tapahtui virhe.");
@@ -192,7 +192,6 @@ public class TietokantaToiminnot {
         ResultSet rs = null; // Kyselyn tulokset
 
         if (tarkistaSyntaksi(kysely)) { //tsiigataan onko kyselyn syntaksi oikeellinen
-
             try {
 
                 stmt = con.createStatement();
@@ -203,8 +202,7 @@ public class TietokantaToiminnot {
 
             // Toiminta mahdollisessa virhetilanteessa
             } catch (SQLException e) {
-                System.out.println("Kyselyn lähetyksessä tapahtui seuraava virhe: " + e.getMessage());
-                e.printStackTrace();
+                System.out.println("Kyselyn lähetyksessä tapahtui seuraava SQL-virhe: " + e.getMessage());
                 return null;
             }
 
@@ -221,9 +219,13 @@ public class TietokantaToiminnot {
 
         if(tarkistaSyntaksi(kaskySQL)){
             try{
+
+                System.out.println("DEBUGMESSAGEE 3");
                 stmt = con.createStatement();
 
                 stmt.executeUpdate(kaskySQL);
+
+                System.out.println("DEBUGMESSAGEE 3");
 
                 System.out.println("Tietokanta päivitetty.");
 
@@ -487,7 +489,7 @@ public class TietokantaToiminnot {
             return uusiID;
 
         }catch(SQLException e){
-            System.out.println("Session tallenuksessa tapahtui bugi.");
+            System.out.println("Session tallenuksessa tapahtui SQL-virhe.");
             e.printStackTrace();
             return 0;
         }
@@ -500,11 +502,19 @@ public class TietokantaToiminnot {
     */
     public boolean lopetaSessio(int s_id){
 
-        java.sql.Time aika = haeAika();
+        try{
+            java.sql.Time aika = haeAika();
 
-        String sessioLopetusSQL = "UPDATE sessio SET sessio_loppu = " + aika + " WHERE id = " + s_id;
+            String sessioLopetusSQL = "UPDATE sessio SET sessio_loppu = '" + aika + "' WHERE id = " + s_id + ";";
 
-        return lahetaKasky(sessioLopetusSQL);
+            System.out.println("DEBUGMESSAGEE 2");
+
+            return lahetaKasky(sessioLopetusSQL);
+        }catch(Exception e){
+            System.out.println("Session lopetuksen tallenuksessa tapahtui virhe.");
+            e.printStackTrace();
+            return false;
+        }
     }
 
     /*hakee ja palauttaa tämänhetkisen ajan, eli pelkän ajan, ei pvm*/

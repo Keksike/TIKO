@@ -30,6 +30,7 @@ public class TIKO {
         System.out.println("---------------------------------");
     }
     //olkaa hyvä <3
+    //harkkatyön tärkein metodi
     public static void tulostaOtsikko(){
 
         System.out.println("----------------------------------------------------------------------------------------------------------------------------");

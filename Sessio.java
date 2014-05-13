@@ -58,6 +58,7 @@ public class Sessio {
 
                             //lopettaa session, eli päivittää äskettäin luotuun sessio-entryyn lopetusajan
                             //tästä puuttuu vielä yritysten lkm, joka täytyy tallentaa suoritaTListassa.
+                            System.out.println("DEBUGTEST1");
                             db.lopetaSessio(sessioID);
                            
                         }
@@ -79,7 +80,7 @@ public class Sessio {
             ResultSet rs = db.lahetaKysely("SELECT id, kuvaus FROM tehtavalista;");
 
             while(rs.next()){
-                System.out.print("Tehtavasar " + rs.getString("id") + ": ");
+                System.out.print("Tehtavasarja " + rs.getString("id") + ": ");
                 System.out.println(rs.getString("kuvaus"));
             }
 
