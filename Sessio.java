@@ -33,7 +33,7 @@ public class Sessio {
                 tulostaTListat();
 
                 System.out.println("Valitse tehtavalista jonka haluat suorittaa kirjoittamalla sen numero.");
-                System.out.println("Lopettaaksesi kirjoita 0");
+                System.out.println("Lopettaaksesi kirjoita 0\n");
                 int syote = In.readInt();
                 
                 //Lopetetaan
@@ -58,7 +58,6 @@ public class Sessio {
 
                             //lopettaa session, eli päivittää äskettäin luotuun sessio-entryyn lopetusajan
                             //tästä puuttuu vielä yritysten lkm, joka täytyy tallentaa suoritaTListassa.
-                            System.out.println("DEBUGTEST1");
                             db.lopetaSessio(sessioID);
                            
                         }
@@ -93,7 +92,7 @@ public class Sessio {
 
    
     //Tehtavalistan suorittaminen
-    public void suoritaTLista(int tlNro, int sessioID){
+    public boolean suoritaTLista(int tlNro, int sessioID){
       
         ResultSet tehtava = null; //Käsiteltävä tehtävä
         ResultSet vastaus = null;   //Oikea vastaus
@@ -107,6 +106,7 @@ public class Sessio {
         java.sql.Time alkuaika = null;
         java.sql.Time loppuaika = null;
         boolean olikoOikein = false;
+        boolean listaSuoritettu = true; //tämä muuttuu falseksi jos jokin tehtävä menee kolmesti väärin
       
         //Käydään listan tehtävät läpi
         for (int i = 1; i < tlPituus; i++){
@@ -156,18 +156,22 @@ public class Sessio {
                 // Väärällä vastauksella toistetaan ja lisätään väärälaskuria...
                 if(!olikoOikein){
                 
-                    System.out.println("Vastauksesi oli väärä. (Tai ohjelmassamme on virhe)");
+                    System.out.println("Vastauksesi oli väärä. (Tai ohjelmassamme on virhe)\n");
                     vaarin++;
                     //Vääriä vastauksia on kolme, siirrytään seuraavaan
                     if(vaarin == 3){
+                        listaSuoritettu = false;
                         vaarin = 0;
                         olikoOikein = false;
-                        System.out.println("Vastasit väärin kolmesti. Siirrytään seuraavaan tehtävään.");
+                        System.out.println("Vastasit väärin kolmesti. Siirrytään seuraavaan tehtävään.\n");
+
+                        System.out.println("Oikea vastaus olisi ollut: " + vastausKysely);
+                        System.out.println();
                         suoritettu = true;
                     }
                 //... ja oikealla vastauksella siirrytään seuraavaan ja nollataan väärät
                 }else{
-                    System.out.println("Oikea vastaus. Siirrytään seuraavaan tehtävään.");
+                    System.out.println("Oikea vastaus. Siirrytään seuraavaan tehtävään.\n");
                     vaarin = 0;
                     olikoOikein = true;
                     suoritettu = true;
@@ -176,8 +180,8 @@ public class Sessio {
             //Merkitään suorituksen tiedot kantaan
             loppuaika = db.haeAika();
             lisaaTiedotKantaan(tlNro, i, sessioID, vaarin + 1, olikoOikein, alkuaika, loppuaika);
-            
         }
+        return listaSuoritettu;
     }
 
     //lisää tiedon tehtävän suorittamisesta tietokantaan
@@ -211,14 +215,14 @@ public class Sessio {
             kayttajatunnus = In.readInt();
 
             if(db.onkoKayttajaOlemassa(kayttajatunnus)){ //jos arvoa ei löytynyt
-                System.out.println("Sisäänkirjautuminen onnistui!");
+                System.out.println("\nSisäänkirjautuminen onnistui!");
                 return true;
             }else{
-                System.out.println("Käyttäjätunnusta ei löytynyt. Yritä uudelleen.");
+                System.out.println("\nKäyttäjätunnusta ei löytynyt. Yritä uudelleen.");
                 return false;
             }
         }catch(Exception e){
-            System.out.println("Käyttäjätunnuksen tarkistuksessa tapahtui virhe.");
+            System.out.println("\nKäyttäjätunnuksen tarkistuksessa tapahtui virhe.");
             e.printStackTrace();
             return false;
         }

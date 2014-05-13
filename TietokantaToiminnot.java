@@ -220,20 +220,19 @@ public class TietokantaToiminnot {
         if(tarkistaSyntaksi(kaskySQL)){
             try{
 
-                System.out.println("DEBUGMESSAGEE 3");
                 stmt = con.createStatement();
 
                 stmt.executeUpdate(kaskySQL);
-
-                System.out.println("DEBUGMESSAGEE 3");
 
                 System.out.println("Tietokanta päivitetty.");
 
                 return true;
             }catch(SQLException se){
+                System.out.println("SQL-käskyn lähetyksessä tapahtui virhe.");
                 se.printStackTrace();
                 return false;
             }catch(Exception e){
+                System.out.println("Käskyn lähetyksessä tapahtui virhe.");
                 e.printStackTrace();
                 return false;
             }
@@ -506,8 +505,6 @@ public class TietokantaToiminnot {
             java.sql.Time aika = haeAika();
 
             String sessioLopetusSQL = "UPDATE sessio SET sessio_loppu = '" + aika + "' WHERE id = " + s_id + ";";
-
-            System.out.println("DEBUGMESSAGEE 2");
 
             return lahetaKasky(sessioLopetusSQL);
         }catch(Exception e){

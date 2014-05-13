@@ -44,7 +44,6 @@ CREATE TABLE sessio (
 
 	sessio_alku TIME,
 	sessio_loppu TIME,
-	yritysnro INT,
 	PRIMARY KEY (id)
 );
 
