@@ -24,8 +24,8 @@ public class TietokantaToiminnot {
     private final String PALVELIN = "dbstud.sis.uta.fi";
     private final int PORTTI = 5432;
     private final String TIETOKANTA = "tiko2014db29";  // tähän oma käyttäjätunnus
-    private final String KAYTTAJA = "cb96337";  // tähän oma käyttäjätunnus
-    private final String SALASANA = "lol";  // tähän tietokannan salasana
+    private final String KAYTTAJA = "op96382";  // tähän oma käyttäjätunnus
+    private final String SALASANA = "nope";  // tähän tietokannan salasana
 
     private Connection con;
     private Statement stmt;
@@ -154,9 +154,9 @@ public class TietokantaToiminnot {
         
         try {
          
-        String lause = "SELECT * " + "FROM esimkanta;";
+            String lause = "SELECT * " + "FROM esimkanta;";
 
-        rs = lahetaKysely(lause);
+            rs = lahetaKysely(lause);
 
         } catch (Exception e) {
             System.out.println("Esimerkkikannan haussa tapahtui virhe.");
@@ -274,60 +274,102 @@ public class TietokantaToiminnot {
         }
 
       return palautus;
-   }
+    }
+    
+    //Tulostaa resultSetin
+    public boolean tulostaRs(ResultSet rs){
+
+        try {
+
+            ResultSetMetaData rsmd = rs.getMetaData();
+            int columnit = rsmd.getColumnCount();
+
+            while(rs.next()){
+
+                for (int i = 1; i != columnit+1; i++) {
+                    
+                    System.out.println(rs.getString(i));
+
+                }
+            }
+            return true;
+        }
+        catch (SQLException e) {
+            System.out.println("ResultSetin tulostuksessa tapahtui virhe: " + e.getMessage());
+            e.printStackTrace();
+            return false; 
+        }
+    }
+
 
     //Vertaa kahta ResultSettiä.
     public boolean vertaaTulokset(ResultSet rs, ResultSet esim){
 
-        String tulos;
-        String vastaus;
-        int i;
-        boolean palautus;
+        String tulos = null;
+        String vastaus = null;
+        boolean palautus = true;
 
-        i = 0;
-        palautus = true;
+        //Tarkistetaan ettei kumpikaan parametri ole tyhjä
+        if(rs == null | esim == null){
+            System.out.println("Toinen vertailtavista kyselyistä palautti tyhjän!");
+            return false;
+        }
+
         try {
-            while(rs.next() & esim.next()){
-             
-                i++;
-             
-                tulos = rs.getString(i);
-                vastaus = esim.getString(i);
+            tulostaRs(rs);
+            tulostaRs(esim);
+            //Hankitaan tietoja resultSeteistä.
+            ResultSetMetaData rsMeta = rs.getMetaData();
+            ResultSetMetaData esimMeta = esim.getMetaData();
 
-                if(!tulos.equals(vastaus)){
-                    palautus = false;
+            int rsColumnit = rsMeta.getColumnCount();
+            int esimColumnit = esimMeta.getColumnCount();
+
+            //Jatketaan kunnes molemmat setit loppuvat
+            if(rsColumnit == esimColumnit){
+                while(esim.next() | rs.next()){
+                    for (int i = 1; i != esimColumnit+1; i++) {
+                        
+                        tulos = rs.getString(i);
+                        vastaus = esim.getString(i);
+                        System.out.println(tulos + " ja " + vastaus);
+
+                        if(!tulos.equals(vastaus)){
+                            palautus = false;
+                        }
+                    }
                 }
             }
+            //Erimäärä sarakkeita
+            else{
+                palautus = false;
+            }
+            
 
             //Vastaus oli väärä.
             if (palautus == false) {
+
+                //Tulostetaan kayttajan tulos                
                 System.out.println("Kyselyssä oli looginen virhe.\nVastauksesi palautti tuloksen:\n");
-             
-                i = 0;
+                tulostaRs(rs);                
 
-                while(rs.next()){
-                    i++;
-                    System.out.println(rs.getString(i));
-                }
-
+                //Tulostetaan oikean vastauksen tulos
                 System.out.println("Kyselyn tulisi tuottaa tulos:\n");
-             
-                i = 0;
-
-                while(esim.next()){
-                    i++;
-                    System.out.println(esim.getString(i));
-                }
+                tulostaRs(esim);
 
                 return palautus;
             }
-        }catch (SQLException e) {
+            //Tulos oli oikea.
+            else{
+                return true;
+            }
+        
+        } catch (SQLException e) {
             System.out.println("Tulosten vertauksessa tapahtui seuraava virhe: " + e.getMessage());
             e.printStackTrace();
-            return false;  
+            return false;
         }       
 
-        return palautus;
    }
 
     /*Parametrinä tehtävälistan id*/
