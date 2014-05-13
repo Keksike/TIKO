@@ -106,7 +106,7 @@ public class Sessio {
         int tlPituus = db.haeTLkm(tlNro); //Tehtavalistan pituus
         java.sql.Time alkuaika = null;
         java.sql.Time loppuaika = null;
-        int olikoOikein = 0;
+        boolean olikoOikein = false;
       
         //Käydään listan tehtävät läpi
         for (int i = 1; i < tlPituus; i++){
@@ -161,7 +161,7 @@ public class Sessio {
                     //Vääriä vastauksia on kolme, siirrytään seuraavaan
                     if(vaarin == 3){
                         vaarin = 0;
-                        olikoOikein = 0;
+                        olikoOikein = false;
                         System.out.println("Vastasit väärin kolmesti. Siirrytään seuraavaan tehtävään.");
                         suoritettu = true;
                     }
@@ -169,7 +169,7 @@ public class Sessio {
                 }else{
                     System.out.println("Oikea vastaus. Siirrytään seuraavaan tehtävään.");
                     vaarin = 0;
-                    olikoOikein = 1;
+                    olikoOikein = true;
                     suoritettu = true;
                 }
             }
@@ -181,7 +181,7 @@ public class Sessio {
     }
 
     //lisää tiedon tehtävän suorittamisesta tietokantaan
-    public void lisaaTiedotKantaan(int tlNro, int tehtavaNro, int sessioID, int yritykset, int oikein, java.sql.Time alkuaika, java.sql.Time loppuaika){
+    public void lisaaTiedotKantaan(int tlNro, int tehtavaNro, int sessioID, int yritykset, boolean oikein, java.sql.Time alkuaika, java.sql.Time loppuaika){
 
         int tehtavaID = 0;
         //Haetaan tehtavan ID
@@ -198,7 +198,8 @@ public class Sessio {
             e.printStackTrace();
         }
         //Merkitään tiedot yrityksestä sessioon
-        db.lahetaKysely("INSERT INTO tehdaan (tehtava_id, sessio_id, yritys_nro, oliko_oikein, alku, loppu) VALUES (" + tehtavaID + ", " + sessioID + ", " + yritykset + ", " + oikein + ", " + alkuaika + ", " + loppuaika + ");");
+		//tehtava_id, sessio_id, yritys_nro, oliko_oikein, alku, loppu
+        db.lahetaKysely("INSERT INTO tehdaan VALUES (" + tehtavaID + ", " + sessioID + ", " + yritykset + ", " + oikein + ", '" + alkuaika + "', '" + loppuaika + "');");
 
     }
    
