@@ -6,12 +6,11 @@ import java.sql.*;
 public class Sessio {
    
     private final String VIRHE = "Tapahtui virhe.";
-    TietokantaToiminnot db = new TietokantaToiminnot();
+    private TietokantaToiminnot db = new TietokantaToiminnot();
 
     private int kayttajatunnus;
    
     public void suoritaSessio(){
-        tulostaOtsikko();
       
         //Avataan db yhteys, jos epäonnistuu lopetetaan
         if(!db.avaaYhteys()){
@@ -33,48 +32,29 @@ public class Sessio {
                 //Tulostetaan tehtavalistat
                 tulostaTListat();
 
-                //Pyydetään valinta käyttäjältä ja toimitaan sen mukaan
-                System.out.println("Mikäli haluat nähdä tehtävälistan, kirjoita: 1.");
-                System.out.println("Mikäli haluat suorittaa tehtävälistan, kirjoita: 2.");
+                System.out.println("Valitse tehtavalista jonka haluat suorittaa kirjoittamalla sen numero.");
                 System.out.println("Lopettaaksesi kirjoita 0");
-                int valinta = In.readInt();
+                int syote = In.readInt();
                 
-                //Haetaan tehtavalista
-                if(valinta == 1){
-                    boolean numeroOK = false;
-                    int tehtavaListaNumero;
-                    while(!numeroOK){
-                      
-                        System.out.println("Anna tehtävälistan numero:");
-                        tehtavaListaNumero = In.readInt();
-                      
-                        if(db.onkoTehtavalistaOlemassa(tehtavaListaNumero)){
-
-                            numeroOK = true;
-                            /*tähän tulostukset*/
-                            tulostaTListat();
-                      
-                        }
-                    }
+                //Lopetetaan
+                if(syote == 0){
+                    break;
                 }
-                //Suoritetaan tehtavalista
-                else if(valinta == 2){
-                
+                //Suoritetaan tehtävälista
+                else{
                     boolean numeroOK = false;
                     while(!numeroOK){
 
-                        System.out.println("Anna tehtävälistan numero:");
-                        int tehtavaListaNumero = In.readInt();
                         //Jos tehtavalista löytyy, suoritetaan se
-                        if(db.onkoTehtavalistaOlemassa(tehtavaListaNumero)){
+                        if(db.onkoTehtavalistaOlemassa(syote)){
 
                             numeroOK = true;
 
                             //aloittaa session, eli luo sessiotauluun uuden entryn
                             //sessioID:hen tallennetaan uuden session ID
-                            int sessioID = db.aloitaSessio(kayttajatunnus, tehtavaListaNumero);
+                            int sessioID = db.aloitaSessio(kayttajatunnus, syote); //TÄMÄ BUGAA
 
-                            suoritaTLista(tehtavaListaNumero, sessioID);
+                            suoritaTLista(syote, sessioID);
 
                             //lopettaa session, eli päivittää äskettäin luotuun sessio-entryyn lopetusajan
                             //tästä puuttuu vielä yritysten lkm, joka täytyy tallentaa suoritaTListassa.
@@ -86,30 +66,9 @@ public class Sessio {
                         }
                    }
                 }
-                //Lopetetaan
-                else if(valinta == 0){
-                    break;
-                }
             }
         }
         db.suljeYhteys();
-    }
-   
-    //Tulostaa tehtavalistan
-    public void tulostaTLista(ResultSet rs){
-      
-        int j = 0;
-        /*
-        try {
-            while (rs.next()) {
-                j++;
-                System.out.println (rs.getString(j));
-            }
-        }
-        catch (SQLException e) {
-            System.out.println(VIRHE);
-        }
-        */
     }
    
     //Tulostaa tarjolla olevat tehtavalistat
@@ -118,17 +77,19 @@ public class Sessio {
         try{
       
             ResultSet rs = db.lahetaKysely("SELECT id, kuvaus FROM tehtavalista;");
-            int j = 0;
 
             while(rs.next()){
-                System.out.println();
+                System.out.print("Tehtavasar " + rs.getString("id") + ": ");
+                System.out.println(rs.getString("kuvaus"));
             }
+
         }catch(Exception e){
             System.out.println("Tehtävälistan tulostuksessa tapahtui virhe.");
             e.printStackTrace();
             return;
         }
-   }
+    }
+
    
     //Tehtavalistan suorittaminen
     public void suoritaTLista(int tlNro, int sessioID){
@@ -149,6 +110,13 @@ public class Sessio {
       
         //Käydään listan tehtävät läpi
         for (int i = 1; i < tlPituus; i++){
+
+            /*
+            
+            TÄSSÄ PITÄISI TULOSTAA TIETOKANNAN RAKENNE
+
+            */
+
             //Haetaan suoritettava tehtava
             tehtava = db.haeTehtava(tlNro, i);
             // Tulostetaan tehtävän kuvaus:
@@ -205,6 +173,7 @@ public class Sessio {
                     suoritettu = true;
                 }
             }
+            //Merkitään suorituksen tiedot kantaan
             loppuaika = db.haeAika();
             lisaaTiedotKantaan(tlNro, i, sessioID, vaarin + 1, olikoOikein, alkuaika, loppuaika);
             
@@ -252,20 +221,5 @@ public class Sessio {
             e.printStackTrace();
             return false;
         }
-    }
-
-    /*oli tylsää, ajatus ei kulkenut*/
-    public void tulostaOtsikko(){
-        System.out.println("---------------------------------");
-        System.out.println("######## #### ##    ##  #######  ");
-        System.out.println("   ##     ##  ##   ##  ##     ## ");
-        System.out.println("   ##     ##  ##  ##   ##     ## ");
-        System.out.println("   ##     ##  #####    ##     ## ");
-        System.out.println("   ##     ##  ##  ##   ##     ## ");
-        System.out.println("   ##     ##  ##   ##  ##     ## ");
-        System.out.println("   ##    #### ##    ##  #######  ");
-        System.out.println("---------------------------------");
-        System.out.println("By: Ossi Puustinen, Jenni Mansikka-aho & Cihan Bebek");
-        System.out.println("---------------------------------");
     }
 }
