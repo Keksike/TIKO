@@ -112,12 +112,11 @@ public class Sessio {
         // Käydään listan tehtävät läpi
         for (int i = 1; i < tlPituus; i++){
 
-            /*
+            // Tulostetaan tietokannan rakenne.
+            esimkanta = db.haeEsimKanta();
+            System.out.println("Tietokannan rakenne:");
+            db.tulostaRs(esimkanta);
             
-            TÄSSÄ PITÄISI TULOSTAA TIETOKANNAN RAKENNE
-
-            */
-
             // Haetaan suoritettava tehtava
             tehtava = db.haeTehtava(tlNro, i);
             // Tulostetaan tehtävän kuvaus:
