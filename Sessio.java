@@ -12,52 +12,52 @@ public class Sessio {
    
     public void suoritaSessio(){
       
-        //Avataan db yhteys, jos epäonnistuu lopetetaan
+        // Avataan db yhteys, jos epäonnistuu lopetetaan
         if(!db.avaaYhteys()){
             return;
         }
 
-        //Onnistuuko käyttäjän kirjautuminen
+        // Onnistuuko käyttäjän kirjautuminen
         boolean kirjautunut = false; 
       
-        //Kysytään käyttäjältä tunnuksia kunnes kirjautuminen onnistuu
+        // Kysytään käyttäjältä tunnuksia kunnes kirjautuminen onnistuu
         while(!kirjautunut){
             kirjautunut = kirjaus();
         }
       
-        //Kirjautuminen onnistui
+        // Kirjautuminen onnistui
         if(kirjautunut){
 
             while(true){
-                //Tulostetaan tehtavalistat
+                // Tulostetaan tehtavalistat
                 tulostaTListat();
 
                 System.out.println("Valitse tehtavalista jonka haluat suorittaa kirjoittamalla sen numero.");
                 System.out.println("Lopettaaksesi kirjoita 0\n");
                 int syote = In.readInt();
                 
-                //Lopetetaan
+                // Lopetetaan
                 if(syote == 0){
                     break;
                 }
-                //Suoritetaan tehtävälista
+                // Suoritetaan tehtävälista
                 else{
                     boolean numeroOK = false;
                     while(!numeroOK){
 
-                        //Jos tehtavalista löytyy, suoritetaan se
+                        // Jos tehtävälista löytyy, suoritetaan se
                         if(db.onkoTehtavalistaOlemassa(syote)){
 
                             numeroOK = true;
 
-                            //aloittaa session, eli luo sessiotauluun uuden entryn
-                            //sessioID:hen tallennetaan uuden session ID
-                            int sessioID = db.aloitaSessio(kayttajatunnus, syote); //TÄMÄ BUGAA
+                            // Aloittaa session, eli luo sessiotauluun uuden entryn
+                            // SessioID:hen tallennetaan uuden session ID
+                            int sessioID = db.aloitaSessio(kayttajatunnus, syote);
 
                             suoritaTLista(syote, sessioID);
 
-                            //lopettaa session, eli päivittää äskettäin luotuun sessio-entryyn lopetusajan
-                            //tästä puuttuu vielä yritysten lkm, joka täytyy tallentaa suoritaTListassa.
+                            // Lopettaa session, eli päivittää äskettäin luotuun sessio-entryyn lopetusajan
+                            // Tästä puuttuu vielä yritysten lkm, joka täytyy tallentaa suoritaTListassa.
                             db.lopetaSessio(sessioID);
                            
                         }
@@ -71,7 +71,7 @@ public class Sessio {
         db.suljeYhteys();
     }
    
-    //Tulostaa tarjolla olevat tehtavalistat
+    // Tulostaa tarjolla olevat tehtävälistat
     public void tulostaTListat(){
 
         try{
@@ -91,24 +91,25 @@ public class Sessio {
     }
 
    
-    //Tehtavalistan suorittaminen
+    // Tehtävälistan suorittaminen
     public boolean suoritaTLista(int tlNro, int sessioID){
       
-        ResultSet tehtava = null; //Käsiteltävä tehtävä
-        ResultSet vastaus = null;   //Oikea vastaus
-        ResultSet tulos = null; //Kayttajan kyselyn tulos
+        ResultSet tehtava = null; // Käsiteltävä tehtävä
+        ResultSet vastaus = null;   // Oikea vastaus
+        ResultSet tulos = null; // Kayttajan kyselyn tulos
         String vastausKysely = null;
         String kysely = null; // Kayttajan antama kysely
-        boolean suoritettu = false; //Onko tehtävä suoritetttu
-        int j = 0; //Laskuri
-        int vaarin = 0; //Vaarien vastauksien määrä
-        int tlPituus = db.haeTLkm(tlNro); //Tehtavalistan pituus
+        boolean suoritettu = false; // Onko tehtävä suoritetttu
+        int j = 0; // Laskuri
+        int vaarin = 0; // Väärien vastauksien määrä
+        int tlPituus = db.haeTLkm(tlNro); // Tehtavalistan pituus
         java.sql.Time alkuaika = null;
         java.sql.Time loppuaika = null;
         boolean olikoOikein = false;
-        boolean listaSuoritettu = true; //tämä muuttuu falseksi jos jokin tehtävä menee kolmesti väärin
+	// Tämä muuttuu falseksi jos jokin tehtävä menee kolmesti väärin
+        boolean listaSuoritettu = true; 
       
-        //Käydään listan tehtävät läpi
+        // Käydään listan tehtävät läpi
         for (int i = 1; i < tlPituus; i++){
 
             /*
@@ -117,7 +118,7 @@ public class Sessio {
 
             */
 
-            //Haetaan suoritettava tehtava
+            // Haetaan suoritettava tehtava
             tehtava = db.haeTehtava(tlNro, i);
             // Tulostetaan tehtävän kuvaus:
             try {
@@ -129,17 +130,17 @@ public class Sessio {
                 e.printStackTrace();
             }
 
-            //Kirjataan tehtävän aloituksen aika
+            // Kirjataan tehtävän aloituksen aika
             alkuaika = db.haeAika();
 
-            //Kolme yritystä ratkaista tehtävä
+            // Kolme yritystä ratkaista tehtävä
             suoritettu = false;
             while (!suoritettu){
-                //Pyydetään käyttäjältä vastaus ja lähetetään kysely
+                // Pyydetään käyttäjältä vastaus ja lähetetään kysely
                 kysely = In.readString();
                 tulos = db.lahetaKysely(kysely);
                 
-                //Haetaan oikea vastaus kyselyyn
+                // Haetaan oikea vastaus kyselyyn
                 try{
                     vastaus = db.lahetaKysely("SELECT esim_vastaus FROM tehtava WHERE id = " + i + ";");
                     vastaus.next();
@@ -158,7 +159,7 @@ public class Sessio {
                 
                     System.out.println("Vastauksesi oli väärä. (Tai ohjelmassamme on virhe)\n");
                     vaarin++;
-                    //Vääriä vastauksia on kolme, siirrytään seuraavaan
+                    // Vääriä vastauksia on kolme, siirrytään seuraavaan
                     if(vaarin == 3){
                         listaSuoritettu = false;
                         vaarin = 0;
@@ -177,22 +178,22 @@ public class Sessio {
                     suoritettu = true;
                 }
             }
-            //Merkitään suorituksen tiedot kantaan
+            // Merkitään suorituksen tiedot kantaan
             loppuaika = db.haeAika();
             lisaaTiedotKantaan(tlNro, i, sessioID, vaarin + 1, olikoOikein, alkuaika, loppuaika);
         }
         return listaSuoritettu;
     }
 
-    //lisää tiedon tehtävän suorittamisesta tietokantaan
+    // Lisää tiedon tehtävän suorittamisesta tietokantaan
     public void lisaaTiedotKantaan(int tlNro, int tehtavaNro, int sessioID, int yritykset, boolean oikein, java.sql.Time alkuaika, java.sql.Time loppuaika){
 
         int tehtavaID = 0;
-        //Haetaan tehtavan ID
+        // Haetaan tehtävän ID
         ResultSet tID = db.lahetaKysely("SELECT kuuluu.tehtava_id FROM tehtava INNER JOIN kuuluu ON tehtava.id = kuuluu.tehtava_id INNER JOIN tehtavalista ON kuuluu.tehtavalista_id" +
             " = tehtavalista.id WHERE kuuluu.tehtavanro = " + tehtavaNro + " AND tehtavalista.id = " + tlNro + ";");
 
-        //Noudetaan se resultsetistä
+        // Noudetaan se resultsetistä
         try{
             tID.next();
             tehtavaID = tID.getInt(1); 
@@ -201,20 +202,21 @@ public class Sessio {
             System.out.println("Tehtävän hakemisessa tapahtui virhe.");
             e.printStackTrace();
         }
-        //Merkitään tiedot yrityksestä sessioon
-		//tehtava_id, sessio_id, yritys_nro, oliko_oikein, alku, loppu
+        // Merkitään tiedot yrityksestä sessioon
+	// tehtava_id, sessio_id, yritys_nro, oliko_oikein, alku, loppu
         db.lahetaKasky("INSERT INTO tehdaan VALUES (" + tehtavaID + ", " + sessioID + ", " + yritykset + ", " + oikein + ", '" + alkuaika + "', '" + loppuaika + "');");
 
     }
    
-    //Kirjaa käyttäjän sisään
+    // Kirjaa käyttäjän sisään
     public boolean kirjaus(){
     
         try{
             System.out.println("Käyttäjätunnus:");
             kayttajatunnus = In.readInt();
-
-            if(db.onkoKayttajaOlemassa(kayttajatunnus)){ //jos arvoa ei löytynyt
+            
+            // Jos arvoa ei löytynyt
+            if(db.onkoKayttajaOlemassa(kayttajatunnus)){ 
                 System.out.println("\nSisäänkirjautuminen onnistui!");
                 return true;
             }else{
