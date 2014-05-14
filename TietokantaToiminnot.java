@@ -5,10 +5,6 @@
 *
 * Pohjana on käytetty kurssilla tarjottua JDBC esimerkkiä.
 *
-* Ohje:
-* 1. kopioi kotihakemistoon shell.sis.uta.fi:ssa
-* 2. kääntö shell.sis.fi:ssa komennolla: javac Testi.java
-* 3. ajo shell.sis.uta.fi:ssa komennolla: java -classpath /usr/share/java/postgresql.jar:. Testi
 */
 
 
@@ -16,20 +12,20 @@ import java.sql.*;
 
 public class TietokantaToiminnot {
 
-    // tietokannan ja käyttäjän tiedot
+    // Tietokannan ja käyttäjän tiedot
 
     private final String AJURI = "org.postgresql.Driver";
     private final String PROTOKOLLA = "jdbc:postgresql:";
     private final String PALVELIN = "dbstud.sis.uta.fi";
     private final int PORTTI = 5432;
-    private final String TIETOKANTA = "tiko2014db29";  // tähän oma käyttäjätunnus
+    private final String TIETOKANTA = "tiko2014db29";  // tähän tietokannan nimi
     private final String KAYTTAJA = "";  // tähän oma käyttäjätunnus
     private final String SALASANA = "";  // tähän tietokannan salasana
 
     private Connection con;
     private Statement stmt;
 
-    //Yhteyden avaaminen
+    // Yhteyden avaaminen
     public boolean avaaYhteys(){
 
         // Vaihe 1: tietokanta-ajurin lataaminen
@@ -60,22 +56,22 @@ public class TietokantaToiminnot {
     }
 
 
-   //Yhteyden sulkeminen
+   // Yhteyden sulkeminen
    public boolean suljeYhteys(){
 
-        // yhteyden sulkeminen 
-    
-        if (con != null) { // jos yhteyden luominen ei onnistunut, con == null
+        // Jos yhteyden luominen ei onnistunut, con == null
+        if (con != null) { 
 
             try {     
                 con.close();
-                stmt.close(); // Sulkee myös tulosjoukon    
+                // Sulkee myös tulosjoukon
+                stmt.close();    
                 return true;
 
             } catch(SQLException e) {
                 System.out.println("Yhteyden sulkeminen tietokantaan ei onnistunut. Lopetetaan ohjelman suoritus.");
                 e.printStackTrace();
-                return false; //null
+                return false;
             }
 
         }else{
@@ -85,10 +81,10 @@ public class TietokantaToiminnot {
     }
 
 
-    //Haetaan tehtavalista
+    // Haetaan tehtävälista
     public ResultSet haeTehtLista(int listaNro){
-
-        ResultSet rs = null; // Kyselyn tulokset
+        // Kyselyn tulokset
+        ResultSet rs = null; 
 
         try {
         
@@ -101,7 +97,8 @@ public class TietokantaToiminnot {
             return null;
         }
 
-        return rs; //Palautetaan tulosjoukko
+	//Palautetaan tulosjoukko
+        return rs; 
    }
 
     public ResultSet haeTehtListat(){
@@ -122,10 +119,12 @@ public class TietokantaToiminnot {
         }
     }
 
-    //Haetaan tehtävä
+    // Haetaan tehtävä
     public ResultSet haeTehtava(int tehtNro, int tehtLista){
 
-        ResultSet rs = null; // Kyselyn tulokset
+	// Kyselyn tulokset
+        ResultSet rs = null; 
+        
         try {            
             String lause = "SELECT tehtava.id, tehtava.kuvaus " + 
             "FROM tehtava, kuuluu, tehtavalista " + 
@@ -141,18 +140,18 @@ public class TietokantaToiminnot {
             return null;
         }
         
-        return rs; //Palautetaan tulosjoukko
-
+        //Palautetaan tulosjoukko
+        return rs;
    }
 
-    //Hae esimerkkitietokanta
+    // Hae esimerkkitietokanta
     public ResultSet haeEsimKanta(){
 
-        ResultSet rs = null; // Kyselyn tulokset
+	// Kyselyn tulokset
+        ResultSet rs = null; 
 
         
         try {
-         
             String lause = "SELECT * " + "FROM esimkanta;";
 
             rs = lahetaKysely(lause);
@@ -163,10 +162,10 @@ public class TietokantaToiminnot {
             return null;
         }
 
-        return rs; //Palautetaan tulosjoukko
-
+	//Palautetaan tulosjoukko
+        return rs; 
    }
-    //Hakee tehtävälistan tehtävien lukumäärän *KYSEENALAINEN*
+    // Hakee tehtävälistan tehtävien lukumäärän
     public int haeTLkm(int tLista){
       
         int palautus = 0;
@@ -185,17 +184,18 @@ public class TietokantaToiminnot {
 
     }
 
-    //Laheta Kysely
+    // Lähetä kysely
     public ResultSet lahetaKysely(String kysely){
 
-        ResultSet rs = null; // Kyselyn tulokset
-
-        if (tarkistaSyntaksi(kysely)) { //tsiigataan onko kyselyn syntaksi oikeellinen
+	// Kyselyn tulokset
+        ResultSet rs = null; 
+        
+	// Tarkistetaan onko kyselyn syntaksi oikeellinen
+        if (tarkistaSyntaksi(kysely)) {
             try {
-
                 stmt = con.createStatement();
 
-                // Tarkistetaan onko kyselyssä syntaksivirheitä
+		// Suoritetaan kysely
                 rs = stmt.executeQuery(kysely);
                 return rs;
 
@@ -211,19 +211,16 @@ public class TietokantaToiminnot {
         }
     }
 
-    /*Metodi lähettää parametrina annetun SQL-INSERT:in tai UPDATE:n
-    * Palauttaa true lähetys onnistuu, palauttaa false jos ei onnistu
-    */
+    /* Metodi lähettää parametrina annetun SQL-INSERT:in tai UPDATE:n
+     * Palauttaa true lähetys onnistuu, palauttaa false jos ei onnistu
+     */
     public boolean lahetaKasky(String kaskySQL){
 
         if(tarkistaSyntaksi(kaskySQL)){
             try{
-
                 stmt = con.createStatement();
 
                 stmt.executeUpdate(kaskySQL);
-
-                System.out.println("Tietokanta päivitetty.");
 
                 return true;
             }catch(SQLException se){
@@ -239,7 +236,7 @@ public class TietokantaToiminnot {
         return false;
     }
 
-    //Tarkistaa kyselyn syntaksivirheiden varalta
+    // Tarkistaa kyselyn syntaksivirheiden varalta
     public boolean tarkistaSyntaksi(String kysely){
 
         char merkki;
@@ -276,7 +273,7 @@ public class TietokantaToiminnot {
       return palautus;
     }
     
-    //Tulostaa resultSetin
+    // Tulostaa resultSetin
     public boolean tulostaRs(ResultSet rs){
 
         try {
@@ -302,14 +299,14 @@ public class TietokantaToiminnot {
     }
 
 
-    //Vertaa kahta ResultSettiä.
+    // Vertaa kahta ResultSettiä.
     public boolean vertaaTulokset(ResultSet rs, ResultSet esim){
 
         String tulos = null;
         String vastaus = null;
         boolean palautus = true;
 
-        //Tarkistetaan ettei kumpikaan parametri ole tyhjä
+        // Tarkistetaan ettei kumpikaan parametri ole tyhjä
         if(rs == null | esim == null){
             System.out.println("Toinen vertailtavista kyselyistä palautti tyhjän!");
             return false;
@@ -318,14 +315,14 @@ public class TietokantaToiminnot {
         try {
             tulostaRs(rs);
             tulostaRs(esim);
-            //Hankitaan tietoja resultSeteistä.
+            // Hankitaan tietoja resultSeteistä.
             ResultSetMetaData rsMeta = rs.getMetaData();
             ResultSetMetaData esimMeta = esim.getMetaData();
 
             int rsColumnit = rsMeta.getColumnCount();
             int esimColumnit = esimMeta.getColumnCount();
 
-            //Jatketaan kunnes molemmat setit loppuvat
+            // Jatketaan kunnes molemmat setit loppuvat
             if(rsColumnit == esimColumnit){
                 while(esim.next() | rs.next()){
                     for (int i = 1; i != esimColumnit+1; i++) {
@@ -340,26 +337,26 @@ public class TietokantaToiminnot {
                     }
                 }
             }
-            //Erimäärä sarakkeita
+            // Erimäärä sarakkeita
             else{
                 palautus = false;
             }
             
 
-            //Vastaus oli väärä.
+            // Vastaus oli väärä.
             if (palautus == false) {
 
-                //Tulostetaan kayttajan tulos                
+                // Tulostetaan kayttajan tulos                
                 System.out.println("Kyselyssä oli looginen virhe.\nVastauksesi palautti tuloksen:\n");
                 tulostaRs(rs);                
 
-                //Tulostetaan oikean vastauksen tulos
+                // Tulostetaan oikean vastauksen tulos
                 System.out.println("Kyselyn tulisi tuottaa tulos:\n");
                 tulostaRs(esim);
 
                 return palautus;
             }
-            //Tulos oli oikea.
+            // Tulos oli oikea.
             else{
                 return true;
             }
@@ -372,7 +369,7 @@ public class TietokantaToiminnot {
 
    }
 
-    /*Parametrinä tehtävälistan id*/
+    // Parametrinä tehtävälistan id
     public boolean onkoTehtavalistaOlemassa(int id){
 
         try {
@@ -416,7 +413,7 @@ public class TietokantaToiminnot {
         return false;
     }
 
-    /*Parametrinä käyttäjätunnus, eli id*/
+    // Parametrinä käyttäjätunnus, eli id
     public boolean onkoKayttajaOlemassa(int id){
 
         try{
@@ -439,7 +436,7 @@ public class TietokantaToiminnot {
         }
     }
 
-    /*palauttaa 0 jos ei löydy*/
+    // Palauttaa 0 jos ei löydy
     public int haeOikeudet(int id){
 
         try{
@@ -458,28 +455,29 @@ public class TietokantaToiminnot {
         }
     }
 
-    /*Parametrinä käyttäjätunnus: k_id ja tehtävälistatunnus: t_id*/
-    /*Palauttaapi uuden session ID:n. Jos bugaa palauttaa 0.*/
+    /* Parametrinä käyttäjätunnus: k_id ja tehtävälistatunnus: t_id
+     * Palauttaa uuden session ID:n. Jos bugaa palauttaa 0.
+     */
     public int aloitaSessio(int k_id, int t_id){
 
         try{
 
-            //hakee isoimman sessionin id:n resultsettiin
+            // Hakee isoimman sessionin id:n resultsettiin
             ResultSet rs = lahetaKysely("SELECT max(id) FROM sessio;");
 
-            //tähän tallennetaan uusi ID
+            // Tähän tallennetaan uusi ID
             int uusiID = 1;
 
-            if(rs.next()){ //jos vanhaa ID:tä ei löydy, ID on 1
-                //kasvatetaan vanhaa isointa ID:tä yhellä, niin saadaan uusi ID
+            // Jos vanhaa ID:tä ei löydy, ID on 1
+            if(rs.next()){ 
+                // Kasvatetaan vanhaa isointa ID:tä yhellä, niin saadaan uusi ID
                 uusiID = rs.getInt(1)+1;
             }
 
-            //ja tähän tämän hetken aika
+            // Ja tähän tämän hetken aika
             java.sql.Time aika = haeAika();
 
-            //puuttuu yritysten nro
-		// id, kayt_id, suoritettu_teht_lista, sessio_alku, sessio_loppu
+            // id, kayt_id, suoritettu_teht_lista, sessio_alku, sessio_loppu
             String sessioAloitus = "INSERT INTO sessio VALUES (" + uusiID + ", " + k_id + ", " + t_id + ", '" + aika + "', '" + aika + "');";
 
             lahetaKasky(sessioAloitus);
@@ -487,7 +485,7 @@ public class TietokantaToiminnot {
             return uusiID;
 
         }catch(SQLException e){
-            System.out.println("Session tallenuksessa tapahtui SQL-virhe.");
+            System.out.println("Session tallennuksessa tapahtui SQL-virhe.");
             e.printStackTrace();
             return 0;
         }
@@ -496,7 +494,7 @@ public class TietokantaToiminnot {
     /*
     * Metodi asettaa session lopetusajaksi tämänhetkisen ajan.
     * Parametrina annetaan session id: s_id
-    * Palauttaa true jos session loeptus onnistuu, false jos ei
+    * Palauttaa true jos session lopetus onnistuu, false jos ei
     */
     public boolean lopetaSessio(int s_id){
 
@@ -507,13 +505,13 @@ public class TietokantaToiminnot {
 
             return lahetaKasky(sessioLopetusSQL);
         }catch(Exception e){
-            System.out.println("Session lopetuksen tallenuksessa tapahtui virhe.");
+            System.out.println("Session lopetuksen tallennuksessa tapahtui virhe.");
             e.printStackTrace();
             return false;
         }
     }
 
-    /*hakee ja palauttaa tämänhetkisen ajan, eli pelkän ajan, ei pvm*/
+    // Hakee ja palauttaa tämänhetkisen ajan, eli pelkän ajan, ei pvm
     public java.sql.Time haeAika(){
         java.util.Date a = new java.util.Date();
         long aikaL = a.getTime();
