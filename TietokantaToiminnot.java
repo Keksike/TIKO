@@ -152,7 +152,10 @@ public class TietokantaToiminnot {
 
         
         try {
-            String lause = "SELECT * " + "FROM esimkanta;";
+            String lause = "SELECT DISTINCT TABLE_NAME AS taulu, COLUMN_NAME AS attribuutti " +
+			"FROM INFORMATION_SCHEMA.COLUMNS " +
+			"WHERE TABLE_NAME = 'opiskelijat' OR TABLE_NAME = 'suoritukset' OR TABLE_NAME = 'kurssit' " +
+			"ORDER BY TABLE_NAME;";
 
             rs = lahetaKysely(lause);
 
@@ -283,11 +286,13 @@ public class TietokantaToiminnot {
 
             while(rs.next()){
 
-                for (int i = 1; i != columnit+1; i++) {
-                    
-                    System.out.println(rs.getString(i));
-
+                for (int i = 1; i <= columnit; i++) {
+                    if (i > 1) 
+                        System.out.print("  |  ");
+                    System.out.print(rs.getString(i));
+		
                 }
+                System.out.println("");
             }
             return true;
         }
