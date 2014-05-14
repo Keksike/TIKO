@@ -29,26 +29,4 @@ public class TIKO {
         System.out.println("By: Ossi Puustinen, Jenni Mansikka-aho & Cihan Bebek");
         System.out.println("---------------------------------");
     }
-    //olkaa hyvä <3
-    //harkkatyön tärkein metodi
-    public static void tulostaOtsikko(){
-
-        System.out.println("----------------------------------------------------------------------------------------------------------------------------");
-        System.out.println("                                                                                                                            ");
-        System.out.println("                                     ##################################################                                     ");
-        System.out.println("                           ######################################################################                           ");
-        System.out.println("                       ########                                                               #######                       ");
-        System.out.println("                   ######                                                                         #######                   ");
-        System.out.println("                ######                                                                                ######                ");
-        System.out.println("             ######                                                                                      #####              ");
-        System.out.println("           ######           ########   #######  ##########     #######  ##    ##  ##  ##########           #####            ");
-        System.out.println("         #####              ##        ##     ##     ##         ##       ##    ##  ##      ##                 #####          ");
-        System.out.println("       ####                 ##        ##     ##     ##         ##       ##    ##  ##      ##                   #####        ");
-        System.out.println("     #####                  ########  #########     ##         #######  ########  ##      ##                    #####       ");
-        System.out.println("    ####                    ##        ##     ##     ##              ##  ##    ##  ##      ##                      ####      ");
-        System.out.println("   ####                     ##        ##     ##     ##              ##  ##    ##  ##      ##                       ####     ");
-        System.out.println("  ####                      ########  ##     ##     ##         #######  ##    ##  ##      ##                        ####    ");
-        System.out.println(" ####                                                                                                                ####   ");
-        System.out.println("----------------------------------------------------------------------------------------------------------------------------");    	
-    }
 }

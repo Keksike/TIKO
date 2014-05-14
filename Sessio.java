@@ -147,7 +147,7 @@ public class Sessio {
                     vastaus = db.lahetaKysely(vastausKysely);
                 }
                 catch (SQLException e) {
-                    System.out.println("VIRHE");
+                    System.out.println("Virhe oikean vastauksen haussa!\n");
                     e.printStackTrace();
                 }
 
@@ -156,7 +156,7 @@ public class Sessio {
                 // Väärällä vastauksella toistetaan ja lisätään väärälaskuria...
                 if(!olikoOikein){
                 
-                    System.out.println("Vastauksesi oli väärä. (Tai ohjelmassamme on virhe)\n");
+                    System.out.println("Vastauksesi oli väärä.\n");
                     vaarin++;
                     // Vääriä vastauksia on kolme, siirrytään seuraavaan
                     if(vaarin == 3){
@@ -195,7 +195,7 @@ public class Sessio {
         // Noudetaan se resultsetistä
         try{
             tID.next();
-            tehtavaID = tID.getInt(1); 
+            tehtavaID = tID.getInt(1);
         }
         catch (SQLException e) {
             System.out.println("Tehtävän hakemisessa tapahtui virhe.");
