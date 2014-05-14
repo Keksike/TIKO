@@ -318,8 +318,6 @@ public class TietokantaToiminnot {
         }
 
         try {
-            tulostaRs(rs);
-            tulostaRs(esim);
             // Hankitaan tietoja resultSeteistä.
             ResultSetMetaData rsMeta = rs.getMetaData();
             ResultSetMetaData esimMeta = esim.getMetaData();
@@ -329,12 +327,13 @@ public class TietokantaToiminnot {
 
             // Jatketaan kunnes molemmat setit loppuvat
             if(rsColumnit == esimColumnit){
-                while(esim.next() | rs.next()){
-                    for (int i = 1; i != esimColumnit+1; i++) {
+                System.out.println("Vastauksesi ja oikea vastaus:");
+                while(esim.next() && rs.next()){
+                    for (int i = 1; i <= esimColumnit; i++) {
                         
                         tulos = rs.getString(i);
                         vastaus = esim.getString(i);
-                        System.out.println(tulos + " ja " + vastaus);
+                        System.out.println(tulos + "  |  " + vastaus);
 
                         if(!tulos.equals(vastaus)){
                             palautus = false;
@@ -349,7 +348,7 @@ public class TietokantaToiminnot {
             
 
             // Vastaus oli väärä.
-            if (palautus == false) {
+            /*if (palautus == false) {
 
                 // Tulostetaan kayttajan tulos                
                 System.out.println("Kyselyssä oli looginen virhe.\nVastauksesi palautti tuloksen:\n");
@@ -364,7 +363,8 @@ public class TietokantaToiminnot {
             // Tulos oli oikea.
             else{
                 return true;
-            }
+            }*/
+            return palautus;
         
         } catch (SQLException e) {
             System.out.println("Tulosten vertauksessa tapahtui seuraava virhe: " + e.getMessage());
