@@ -307,8 +307,8 @@ public class TietokantaToiminnot {
     // Vertaa kahta ResultSettiä.
     public boolean vertaaTulokset(ResultSet rs, ResultSet esim){
 
-        String tulos = null;
-        String vastaus = null;
+        String tulos = "";
+        String vastaus = "";
         boolean palautus = true;
 
         // Tarkistetaan ettei kumpikaan parametri ole tyhjä
@@ -316,7 +316,7 @@ public class TietokantaToiminnot {
             System.out.println("Toinen vertailtavista kyselyistä palautti tyhjän!");
             return false;
         }
-
+        
         try {
             // Hankitaan tietoja resultSeteistä.
             ResultSetMetaData rsMeta = rs.getMetaData();
@@ -324,46 +324,31 @@ public class TietokantaToiminnot {
 
             int rsColumnit = rsMeta.getColumnCount();
             int esimColumnit = esimMeta.getColumnCount();
-
+			
+            String kokovastaus = "";
+            String kokotulos = "";
+			
             // Jatketaan kunnes molemmat setit loppuvat
-            if(rsColumnit == esimColumnit){
-                System.out.println("Vastauksesi ja oikea vastaus:");
-                while(esim.next() && rs.next()){
-                    for (int i = 1; i <= esimColumnit; i++) {
-                        
-                        tulos = rs.getString(i);
-                        vastaus = esim.getString(i);
-                        System.out.println(tulos + "  |  " + vastaus);
-
-                        if(!tulos.equals(vastaus)){
-                            palautus = false;
-                        }
-                    }
+            System.out.println("Vastauksesi:");
+            while(esim.next()){
+                for (int i = 1; i <= esimColumnit; i++) {
+                    vastaus = esim.getString(i);
+                    System.out.println(vastaus);
+                    kokovastaus += vastaus;
                 }
             }
-            // Erimäärä sarakkeita
-            else{
+            System.out.println("Oikea vastaus:");
+            while(rs.next()){
+                for (int i = 1; i <= rsColumnit; i++) {
+                   tulos = rs.getString(i);
+                   System.out.println(tulos);
+                   kokotulos += tulos;
+                }
+            }
+            if(!kokovastaus.equals(kokotulos)){
                 palautus = false;
             }
             
-
-            // Vastaus oli väärä.
-            /*if (palautus == false) {
-
-                // Tulostetaan kayttajan tulos                
-                System.out.println("Kyselyssä oli looginen virhe.\nVastauksesi palautti tuloksen:\n");
-                tulostaRs(rs);                
-
-                // Tulostetaan oikean vastauksen tulos
-                System.out.println("Kyselyn tulisi tuottaa tulos:\n");
-                tulostaRs(esim);
-
-                return palautus;
-            }
-            // Tulos oli oikea.
-            else{
-                return true;
-            }*/
             return palautus;
         
         } catch (SQLException e) {
