@@ -93,7 +93,8 @@ public class Sessio {
    
     // Tehtävälistan suorittaminen
     public boolean suoritaTLista(int tlNro, int sessioID){
-      
+        
+        Resultset esimkanta = null; 
         ResultSet tehtava = null; // Käsiteltävä tehtävä
         ResultSet vastaus = null;   // Oikea vastaus
         ResultSet tulos = null; // Kayttajan kyselyn tulos
