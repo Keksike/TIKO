@@ -94,10 +94,7 @@ public class Sessio {
     // Tehtävälistan suorittaminen
     public boolean suoritaTLista(int tlNro, int sessioID){
         
-        Resultset esimkanta = null; 
-        ResultSet tehtava = null; // Käsiteltävä tehtävä
-        ResultSet vastaus = null;   // Oikea vastaus
-        ResultSet tulos = null; // Kayttajan kyselyn tulos
+        ResultSet esimkanta = null; 
         String vastausKysely = null;
         String kysely = null; // Kayttajan antama kysely
         boolean suoritettu = false; // Onko tehtävä suoritetttu
@@ -111,7 +108,11 @@ public class Sessio {
         boolean listaSuoritettu = true; 
       
         // Käydään listan tehtävät läpi
-        for (int i = 1; i < tlPituus; i++){
+        for (int i = 1; i < (tlPituus+1); i++){
+
+            ResultSet vastaus = null;   // Oikea vastaus
+            ResultSet tulos = null; // Kayttajan kyselyn tulos
+            ResultSet tehtava = null; // Käsiteltävä tehtävä
 
             // Tulostetaan tietokannan rakenne.
             esimkanta = db.haeEsimKanta();
@@ -176,6 +177,16 @@ public class Sessio {
                     vaarin = 0;
                     olikoOikein = true;
                     suoritettu = true;
+                }
+                //Suljetaan resultSetit.
+                try {
+                    vastaus.close();
+                    tulos.close();
+                    tehtava.close();                
+                }
+                catch (SQLException e) {
+                    System.out.println("VIRHE!\n");
+                    e.printStackTrace();
                 }
             }
             // Merkitään suorituksen tiedot kantaan
