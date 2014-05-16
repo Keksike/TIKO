@@ -16,7 +16,7 @@ public class TIKO {
     }
 
     /*oli tylsää, ajatus ei kulkenut*/
-    public static void otsikko(){
+    public static void tulostaOtsikko(){
         System.out.println("---------------------------------");
         System.out.println("######## #### ##    ##  #######  ");
         System.out.println("   ##     ##  ##   ##  ##     ## ");
