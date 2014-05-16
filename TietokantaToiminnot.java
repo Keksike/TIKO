@@ -19,8 +19,8 @@ public class TietokantaToiminnot {
     private final String PALVELIN = "dbstud.sis.uta.fi";
     private final int PORTTI = 5432;
     private final String TIETOKANTA = "tiko2014db29";  // tähän tietokannan nimi
-    private final String KAYTTAJA = "";  // tähän oma käyttäjätunnus
-    private final String SALASANA = "";  // tähän tietokannan salasana
+    private final String KAYTTAJA = "op96382";  // tähän oma käyttäjätunnus
+    private final String SALASANA = "g487np23";  // tähän tietokannan salasana
 
     private Connection con;
     private Statement stmt;
@@ -329,7 +329,7 @@ public class TietokantaToiminnot {
             String kokotulos = "";
 			
             // Jatketaan kunnes molemmat setit loppuvat
-            System.out.println("Vastauksesi:");
+            System.out.println("Oikea vastaus:");
             while(esim.next()){
                 for (int i = 1; i <= esimColumnit; i++) {
                     vastaus = esim.getString(i);
@@ -337,7 +337,7 @@ public class TietokantaToiminnot {
                     kokovastaus += vastaus;
                 }
             }
-            System.out.println("Oikea vastaus:");
+            System.out.println("Vastauksesi:");
             while(rs.next()){
                 for (int i = 1; i <= rsColumnit; i++) {
                    tulos = rs.getString(i);
