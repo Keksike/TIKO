@@ -1,0 +1,33 @@
+CREATE TABLE opiskelijat (
+nro INT,
+nimi VARCHAR (30) NOT NULL,
+p_aine VARCHAR (5) NOT NULL,
+PRIMARY KEY (nro));
+INSERT INTO opiskelijat VALUES (1, ’Maija’, ’TKO’);
+INSERT INTO opiskelijat VALUES (2, ’Ville’, ’TKO’);
+INSERT INTO opiskelijat VALUES (3, ’Kalle’, ’VT’);
+INSERT INTO opiskelijat VALUES (4, ’Liisa’, ’VT’);
+
+CREATE TABLE kurssit (
+id INT,
+nimi VARCHAR (30) NOT NULL,
+opettaja VARCHAR (5) NOT NULL,
+PRIMARY KEY (id));
+INSERT INTO kurssit VALUES (1, ’tkp’, ’KI’);
+INSERT INTO kurssit VALUES (2, ’oope’, ’JL’);
+INSERT INTO kurssit VALUES (3, ’tiko’, ’MJ’);
+
+CREATE TABLE suoritukset (
+k_id INT,
+op_nro INT,
+arvosana INT NOT NULL,
+FOREIGN KEY (k_id) REFERENCES kurssit,
+FOREIGN KEY (op_nro) REFERENCES opiskelijat);
+INSERT INTO suoritukset VALUES (1, 1, 5);
+INSERT INTO suoritukset VALUES (1, 2, 4);
+INSERT INTO suoritukset VALUES (1, 3, 2);
+INSERT INTO suoritukset VALUES (2, 1, 5);
+INSERT INTO suoritukset VALUES (2, 2, 3);
+INSERT INTO suoritukset VALUES (2, 4, 3);
+INSERT INTO suoritukset VALUES (3, 1, 5);
+INSERT INTO suoritukset VALUES (3, 2, 4);
