@@ -355,7 +355,7 @@ public class TietokantaToiminnot {
             String kokotulos = "";
 			
             // Jatketaan kunnes molemmat setit loppuvat
-            System.out.println("\nVastauksesi tuottama tulos:");
+            System.out.println("\nOikean vastauksen tuottama tulos:");
             while(esim.next()){
                 for (int i = 1; i <= esimColumnit; i++) {
                     vastaus = esim.getString(i);
@@ -363,7 +363,7 @@ public class TietokantaToiminnot {
                     kokovastaus += vastaus;
                 }
             }
-            System.out.println("\nOikean vastauksen tuottama tulos:");
+            System.out.println("\nVastauksesi tuottama tulos:");
             while(rs.next()){
                 for (int i = 1; i <= rsColumnit; i++) {
                    tulos = rs.getString(i);
