@@ -61,10 +61,10 @@ INSERT INTO kayttaja VALUES (2, ’testaaja2’, 54321, ’VT’, 1);
 
 INSERT INTO tehtava VALUES (1, 1 , ’Kysely’, ’Valitse opettajien nimet’,  ’SELECT opettaja FROM kurssit;’, ’ 2014-04-18’);
 INSERT INTO tehtava VALUES (2, 1 , ’Kysely’, ’Valitse opiskelijoiden nimet, joilla pääaineena on ’’TKO’’.’,  ’SELECT nimi FROM opiskelijat WHERE p_aine = ’’TKO’’;’,  ’ 2014-04-18’);
-INSERT INTO tehtava VALUES (3, 1 , ’Kysely’, ’Mitkä ovat ’’Villen’’ suorittamien kurssien arvosanat?’,  ’SELECT suoritukset.arvosana FROM opiskelijat, suoritukset WHERE opiskelijat.nro = suoritukset.op_nro AND opiskelijat.nimi =’’ Ville’’;’, ’ 2014-04-18’);
+INSERT INTO tehtava VALUES (3, 1 , ’Kysely’, ’Mitkä ovat ’’Villen’’ suorittamien kurssien arvosanat?’,  ’SELECT suoritukset.arvosana FROM opiskelijat, suoritukset WHERE opiskelijat.nro = suoritukset.op_nro AND opiskelijat.nimi =’’Ville’’;’, ’ 2014-04-18’);
 
-INSERT INTO tehtava VALUES (4, 2 , ’Lisäys’, ’Lisää opiskelija nimeltä Matti tietokantaan. Matin opiskelijanumero on 1234 ja pääaine VT.’, ’INSERT INTO opiskelijat VALUES(1234, ’’Matti’’, ’’VT’’); ’, ’ 2014-04-18’);
-INSERT INTO tehtava VALUES (5, 2 , ’Poisto’, ’Poista opiskelija, jonka numero on 1234.’, ’DELETE FROM opiskelijat WHERE nro = 1234; ’, ’2014-04-18’);
+INSERT INTO tehtava VALUES (4, 2 , ’Lisäys’, ’Lisää opiskelija nimeltä Matti tietokantaan. Matin opiskelijanumero on 1234 ja pääaine VT.’, ’INSERT INTO opiskelijat VALUES(1234, ’’Matti’’, ’’VT’’);’, ’ 2014-04-18’);
+INSERT INTO tehtava VALUES (5, 2 , ’Poisto’, ’Poista opiskelija, jonka numero on 1234.’, ’DELETE FROM opiskelijat WHERE nro = 1234;’, ’2014-04-18’);
 
 INSERT INTO tehtavalista VALUES (1, ’Kyselyitä’, 3, ’ 2014-04-18’);
 INSERT INTO tehtavalista VALUES (2, ’Lisäyksiä ja poistoja’, 3, ’ 2014-04-18’);
