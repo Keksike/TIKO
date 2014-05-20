@@ -27,48 +27,109 @@ public class Sessio {
       
         // Kirjautuminen onnistui
         if(kirjautunut){
-
             while(true){
-                // Tulostetaan tehtavalistat
-                tulostaTListat();
+                int valinta = 0;
 
-                System.out.println("Valitse tehtavalista jonka haluat suorittaa kirjoittamalla sen numero.");
-                System.out.println("\nLopettaaksesi kirjoita 0\n");
-                int syote = In.readInt();
-                
-                // Lopetetaan
-                if(syote == 0){
-                    break;
+                boolean valintaOK = false;
+                while(!valintaOK){
+                    System.out.println("Valitse 1 mikäli haluat suorittaa tehtävälistoja.");
+                    System.out.println("Valitse 2 mikäli haluat tulostaa raportin");
+
+                    valinta = In.readInt();
+                    if(valinta == 1 || valinta == 2){
+                        valintaOK = true;
+                    }else{
+                        System.out.println("Virheellinen valinta. Valinnan täytyy olla 1 tai 2.");
+                    }
                 }
-                // Suoritetaan tehtävälista
-                else{
-                    boolean numeroOK = false;
-                    while(!numeroOK){
 
-                        // Jos tehtävälista löytyy, suoritetaan se
-                        if(db.onkoTehtavalistaOlemassa(syote)){
+                if(valinta == 1){
+                    // Tulostetaan tehtavalistat
+                    tulostaTListat();
 
-                            numeroOK = true;
+                    System.out.println("Valitse tehtavalista jonka haluat suorittaa kirjoittamalla sen numero.");
+                    System.out.println("\nLopettaaksesi kirjoita 0\n");
+                    int syote = In.readInt();
+                    
+                    // Lopetetaan
+                    if(syote == 0){
+                        break;
+                    }else{ // Suoritetaan tehtävälista
+                        boolean numeroOK = false;
+                        while(!numeroOK){
 
-                            // Aloittaa session, eli luo sessiotauluun uuden entryn
-                            // SessioID:hen tallennetaan uuden session ID
-                            int sessioID = db.aloitaSessio(kayttajatunnus, syote);
+                            // Jos tehtävälista löytyy, suoritetaan se
+                            if(db.onkoTehtavalistaOlemassa(syote)){
 
-                            suoritaTLista(syote, sessioID);
+                                numeroOK = true;
 
-                            // Lopettaa session, eli päivittää äskettäin luotuun sessio-entryyn lopetusajan
-                            // Tästä puuttuu vielä yritysten lkm, joka täytyy tallentaa suoritaTListassa.
-                            db.lopetaSessio(sessioID);
-                           
+                                // Aloittaa session, eli luo sessiotauluun uuden entryn
+                                // SessioID:hen tallennetaan uuden session ID
+                                int sessioID = db.aloitaSessio(kayttajatunnus, syote);
+
+                                suoritaTLista(syote, sessioID);
+
+                                // Lopettaa session, eli päivittää äskettäin luotuun sessio-entryyn lopetusajan
+                                // Tästä puuttuu vielä yritysten lkm, joka täytyy tallentaa suoritaTListassa.
+                                db.lopetaSessio(sessioID);
+                               
+                            }
+                            else{
+                                System.out.println("Virheellinen valinta. Yritä uudelleen.");
+                            }
                         }
-                        else{
-                            System.out.println("Virheellinen valinta. Yritä uudelleen.");
+                    }
+                }else if(valinta == 2){
+                    boolean raporttiValintaOK = false;
+                    int raporttiValinta = 0;
+
+                    while(!raporttiValintaOK){
+                        System.out.println("Jos haluat raportin uusimmasta sessiosta, valitse 1.");
+                        System.out.println("Jos haluat tiettyyn tehtävälistaan liittyvien sessioiden yhteenvetotiedot, valitse 2.");
+                        raporttiValinta = In.readInt();
+
+                        if(raporttiValinta == 1 || raporttiValinta == 2){
+                            raporttiValintaOK = true;
+                        }else{
+                            System.out.println("Virheellinen valinta. Valinnan täytyy olla 1 tai 2.");
                         }
-                   }
+                    }
+
+                    if(raporttiValinta == 1){
+                        tulostaUusinSessio();
+                    }else if(raporttiValinta == 2){
+                        //tähän se jennin setti
+                    }
                 }
             }
         }
         db.suljeYhteys();
+    }
+
+    public void tulostaUusinSessio(){
+        try{
+            //haetaan ensin uusimman session id ja käyttäjätunnus
+            ResultSet sessioRs = db.lahetaKysely("SELECT kayt_id, id FROM sessio WHERE id=(SELECT max(id) FROM sessio);");
+            
+            sessioRs.next();
+            int kayttajatunnus = sessioRs.getInt("kayt_id");
+            int uusinId = sessioRs.getInt("id");
+            int oikeidenMaara = 0;
+
+            //haetaan oikein menneiden tehtävien lkm tehdaan-taulusta
+            ResultSet oikeidenMaaraRs = db.lahetaKysely("SELECT * FROM tehdaan WHERE sessio_id = " + uusinId + ";");
+            while(oikeidenMaaraRs.next()){
+                oikeidenMaara++;
+            }
+
+            System.out.println("Raportti uusimmasta sessiosta:");
+            System.out.println("Käyttäjätunnus: " + kayttajatunnus + ". Onnistuneiden tehtävien lukumäärä: " + oikeidenMaara);
+
+        }catch(Exception e){
+            System.out.println("Raportin tulostuksessa tapahtui virhe.");
+            e.printStackTrace();
+            return;
+        }
     }
    
     // Tulostaa tarjolla olevat tehtävälistat

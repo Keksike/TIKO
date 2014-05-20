@@ -19,7 +19,7 @@ public class TietokantaToiminnot {
     private final String PALVELIN = "dbstud.sis.uta.fi";
     private final int PORTTI = 5432;
     private final String TIETOKANTA = "tiko2014db29";  // tähän tietokannan nimi
-    private final String KAYTTAJA = "op96382";  // tähän oma käyttäjätunnus
+    private final String KAYTTAJA = "cb96337";  // tähän oma käyttäjätunnus
     private final String SALASANA = "lol";  // tähän tietokannan salasana
 
     private Connection con;
@@ -51,7 +51,6 @@ public class TietokantaToiminnot {
         }
 
         return true;
-
     }
 
 
