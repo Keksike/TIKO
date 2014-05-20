@@ -98,7 +98,7 @@ public class Sessio {
                     if(raporttiValinta == 1){
                         tulostaUusinSessio();
                     }else if(raporttiValinta == 2){
-                        //tähän se jennin setti
+                        tulostaYhteenveto();
                     }
                 }
             }
@@ -131,7 +131,30 @@ public class Sessio {
             return;
         }
     }
-   
+	public void tulostaYhteenveto() {
+		try {
+			ResultSet sessioYv = db.lahetaKysely("SELECT MIN(sessio_loppu - sessio_alku) as minimiaika, " +
+												"MAX(sessio_loppu - sessio_alku) as maksimiaika, " +
+												"AVG(sessio_loppu - sessio_alku) as keskiarvo from sessio;");
+			ResultSetMetaData rsmd = sessioYv.getMetaData();
+			int columnit = rsmd.getColumnCount();
+
+			System.out.println("Raportti sessioiden suoritusajoista:");
+			for (int i = 1; i <= columnit; i++) {
+				System.out.print(rsmd.getColumnName(i));
+				if (i < columnit)
+					System.out.print("| ");
+			}
+			System.out.println();
+			db.tulostaRs(sessioYv);
+			
+		}
+		catch(Exception e){
+            System.out.println("Raportin tulostuksessa tapahtui virhe.");
+            e.printStackTrace();
+            return;
+        }
+	}
     // Tulostaa tarjolla olevat tehtävälistat
     public void tulostaTListat(){
 
