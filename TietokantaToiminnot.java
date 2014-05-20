@@ -41,7 +41,6 @@ public class TietokantaToiminnot {
         con = null;
         try {
             con = DriverManager.getConnection(PROTOKOLLA + "//" + PALVELIN + ":" + PORTTI + "/" + TIETOKANTA, KAYTTAJA, SALASANA);
-        
             stmt = con.createStatement();
 
         // Toiminta mahdollisessa virhetilanteessa
@@ -63,9 +62,9 @@ public class TietokantaToiminnot {
         if (con != null) { 
 
             try {     
-                con.close();
                 // Sulkee myös tulosjoukon
                 stmt.close();    
+                con.close();
                 return true;
 
             } catch(SQLException e) {
@@ -120,7 +119,7 @@ public class TietokantaToiminnot {
     }
 
     // Haetaan tehtävä
-    public ResultSet haeTehtava(int tehtNro, int tehtLista){
+    public ResultSet haeTehtavasarja(int tehtLista){
 
 	// Kyselyn tulokset
         ResultSet rs = null; 
@@ -128,8 +127,7 @@ public class TietokantaToiminnot {
         try {            
             String lause = "SELECT tehtava.id, tehtava.kuvaus " + 
             "FROM tehtava, kuuluu, tehtavalista " + 
-            "WHERE tehtava.id = " + tehtNro + 
-            " AND tehtavalista.id = " + tehtLista + 
+            " WHERE tehtavalista.id = " + tehtLista + 
             " AND tehtava.id = kuuluu.tehtava_id AND kuuluu.tehtavalista_id = tehtavalista.id;";
 
             rs = lahetaKysely(lause);
@@ -165,7 +163,7 @@ public class TietokantaToiminnot {
             return null;
         }
 
-	//Palautetaan tulosjoukko
+	// Palautetaan tulosjoukko
         return rs; 
    }
     // Hakee tehtävälistan tehtävien lukumäärän
@@ -187,18 +185,39 @@ public class TietokantaToiminnot {
 
     }
 
+    // Hakee kysymystyypin
+    public String haeKysTyyppi(int tehtNro, int tlNro){
+
+        String palautus = "";
+
+        ResultSet rs = lahetaKysely("SELECT tehtava.kys_tyyppi FROM tehtava INNER JOIN kuuluu ON tehtava.id = kuuluu.tehtava_id INNER JOIN tehtavalista ON kuuluu.tehtavalista_id" +
+            " = tehtavalista.id WHERE kuuluu.tehtavanro = " + tehtNro + " AND tehtavalista.id = " + tlNro + ";");
+        
+        try{
+            rs.next();
+            palautus = rs.getString(1);
+        }
+        catch (SQLException e) {
+            System.out.println("Virhe");
+            return null;
+        }
+
+        return palautus;
+    }
+
+
     // Lähetä kysely
     public ResultSet lahetaKysely(String kysely){
 
-	// Kyselyn tulokset
+        // Kyselyn tulokset
         ResultSet rs = null; 
         
-	// Tarkistetaan onko kyselyn syntaksi oikeellinen
+        // Tarkistetaan onko kyselyn syntaksi oikeellinen
         if (tarkistaSyntaksi(kysely)) {
             try {
                 stmt = con.createStatement();
 
-		// Suoritetaan kysely
+                // Suoritetaan kysely
                 rs = stmt.executeQuery(kysely);
                 return rs;
 
@@ -209,7 +228,6 @@ public class TietokantaToiminnot {
             }
 
         } else {
-            System.out.println("Kyselyssä on virheellinen syntaksi. Tarkista mahdolliset kirjoitusvirheet.");
             return null;
         }
     }
@@ -272,6 +290,9 @@ public class TietokantaToiminnot {
             System.out.println("Kyselyn täytyy päättyä puolipisteeseen.");
             palautus = false;
         }
+        if(!palautus){
+            System.out.println("Kyselyssä on virheellinen syntaksi. Tarkista mahdolliset kirjoitusvirheet.");
+        }
 
       return palautus;
     }
@@ -279,30 +300,36 @@ public class TietokantaToiminnot {
     // Tulostaa resultSetin
     public boolean tulostaRs(ResultSet rs){
 
-        try {
+        if(rs != null){
 
-            ResultSetMetaData rsmd = rs.getMetaData();
-            int columnit = rsmd.getColumnCount();
+            try {
 
-            while(rs.next()){
+                ResultSetMetaData rsmd = rs.getMetaData();
+                int columnit = rsmd.getColumnCount();
 
-                for (int i = 1; i <= columnit; i++) {
-                    if (i > 1) 
-                        System.out.print("  |  ");
-                    System.out.print(rs.getString(i));
-		
+                while(rs.next()){
+
+                    for (int i = 1; i <= columnit; i++) {
+                        if (i > 1) 
+                            System.out.print("  |  ");
+                        System.out.print(rs.getString(i));
+    		
+                    }
+                    System.out.println("");
                 }
-                System.out.println("");
+                return true;
             }
-            return true;
+            catch (SQLException e) {
+                System.out.println("ResultSetin tulostuksessa tapahtui virhe: " + e.getMessage());
+                e.printStackTrace();
+                return false; 
+            }
         }
-        catch (SQLException e) {
-            System.out.println("ResultSetin tulostuksessa tapahtui virhe: " + e.getMessage());
-            e.printStackTrace();
-            return false; 
+        else{
+            System.out.println("VIRHE: tulosjoukko on tyhjä.");
+            return false;
         }
     }
-
 
     // Vertaa kahta ResultSettiä.
     public boolean vertaaTulokset(ResultSet rs, ResultSet esim){
@@ -313,7 +340,6 @@ public class TietokantaToiminnot {
 
         // Tarkistetaan ettei kumpikaan parametri ole tyhjä
         if(rs == null | esim == null){
-            System.out.println("Toinen vertailtavista kyselyistä palautti tyhjän!");
             return false;
         }
         
@@ -329,7 +355,7 @@ public class TietokantaToiminnot {
             String kokotulos = "";
 			
             // Jatketaan kunnes molemmat setit loppuvat
-            System.out.println("Oikea vastaus:");
+            System.out.println("\nVastauksesi tuottama tulos:");
             while(esim.next()){
                 for (int i = 1; i <= esimColumnit; i++) {
                     vastaus = esim.getString(i);
@@ -337,7 +363,7 @@ public class TietokantaToiminnot {
                     kokovastaus += vastaus;
                 }
             }
-            System.out.println("Vastauksesi:");
+            System.out.println("\nOikean vastauksen tuottama tulos:");
             while(rs.next()){
                 for (int i = 1; i <= rsColumnit; i++) {
                    tulos = rs.getString(i);
