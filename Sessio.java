@@ -33,7 +33,7 @@ public class Sessio {
                 tulostaTListat();
 
                 System.out.println("Valitse tehtavalista jonka haluat suorittaa kirjoittamalla sen numero.");
-                System.out.println("Lopettaaksesi kirjoita 0\n");
+                System.out.println("\nLopettaaksesi kirjoita 0\n");
                 int syote = In.readInt();
                 
                 // Lopetetaan
@@ -89,7 +89,6 @@ public class Sessio {
             return;
         }
     }
-
    
     // Tehtävälistan suorittaminen
     public boolean suoritaTLista(int tlNro, int sessioID){
@@ -98,101 +97,123 @@ public class Sessio {
         String vastausKysely = null;
         String kysely = null; // Kayttajan antama kysely
         boolean suoritettu = false; // Onko tehtävä suoritetttu
-        int j = 0; // Laskuri
+        int i = 0; // Monesko tehtävä
         int vaarin = 0; // Väärien vastauksien määrä
         int tlPituus = db.haeTLkm(tlNro); // Tehtavalistan pituus
         java.sql.Time alkuaika = null;
         java.sql.Time loppuaika = null;
         boolean olikoOikein = false;
-	// Tämä muuttuu falseksi jos jokin tehtävä menee kolmesti väärin
+        // Tämä muuttuu falseksi jos jokin tehtävä menee kolmesti väärin
         boolean listaSuoritettu = true; 
-      
-        // Käydään listan tehtävät läpi
-        for (int i = 1; i < (tlPituus+1); i++){
+        ResultSet vastaus = null;   // Oikea vastaus
+        ResultSet tulos = null; // Kayttajan kyselyn tulos
+        ResultSet tehtava = null; // Käsiteltävä tehtävä
+        
+        try {
+            // Haetaan suoritettava tehtavasarja
+            tehtava = db.haeTehtavasarja(tlNro);
 
-            ResultSet vastaus = null;   // Oikea vastaus
-            ResultSet tulos = null; // Kayttajan kyselyn tulos
-            ResultSet tehtava = null; // Käsiteltävä tehtävä
+            // Käydään listan tehtävät läpi
+            while(tehtava.next()){
+                olikoOikein = false;
+                // Tulostetaan tietokannan rakenne.
+                esimkanta = db.haeEsimKanta();
+                System.out.println("Tietokannan rakenne:");
+                db.tulostaRs(esimkanta);
+                System.out.println("");
+                // Tulostetaan tehtävän kuvaus:  
+                System.out.println(tehtava.getString(2));
 
-            // Tulostetaan tietokannan rakenne.
-            esimkanta = db.haeEsimKanta();
-            System.out.println("Tietokannan rakenne:");
-            db.tulostaRs(esimkanta);
-            
-            // Haetaan suoritettava tehtava
-            tehtava = db.haeTehtava(tlNro, i);
-            // Tulostetaan tehtävän kuvaus:
-            try {
-                tehtava.next();
-                System.out.println (tehtava.getString(2));
-            }
-            catch (SQLException e) {
-                System.out.println("Tehtävän hakemisessa tapahtui virhe.");
-                e.printStackTrace();
-            }
+                // Kirjataan tehtävän aloituksen aika
+                alkuaika = db.haeAika();
 
-            // Kirjataan tehtävän aloituksen aika
-            alkuaika = db.haeAika();
+                i++;
 
-            // Kolme yritystä ratkaista tehtävä
-            suoritettu = false;
-            while (!suoritettu){
-                // Pyydetään käyttäjältä vastaus ja lähetetään kysely
-                kysely = In.readString();
-                tulos = db.lahetaKysely(kysely);
-                
-                // Haetaan oikea vastaus kyselyyn
-                try{
-                    vastaus = db.lahetaKysely("SELECT esim_vastaus FROM tehtava WHERE id = " + i + ";");
-                    vastaus.next();
-                    vastausKysely = vastaus.getString(1);
-                    vastaus = db.lahetaKysely(vastausKysely);
-                }
-                catch (SQLException e) {
-                    System.out.println("Virhe oikean vastauksen haussa!\n");
-                    e.printStackTrace();
-                }
+                // Kolme yritystä ratkaista tehtävä
+                suoritettu = false;
+                while (!suoritettu){
 
-                // Verrataan käyttäjän kyselyn tulosta vastaukseen
-                olikoOikein = db.vertaaTulokset(tulos, vastaus);
-                // Väärällä vastauksella toistetaan ja lisätään väärälaskuria...
-                if(!olikoOikein){
-                
-                    System.out.println("Vastauksesi oli väärä.\n");
-                    vaarin++;
-                    // Vääriä vastauksia on kolme, siirrytään seuraavaan
-                    if(vaarin == 3){
-                        listaSuoritettu = false;
+                    // Pyydetään käyttäjältä vastaus
+                    kysely = In.readString();
+                    // Kysely
+                    if(db.haeKysTyyppi(i, tlNro).equals("Kysely")){
+                        tulos = db.lahetaKysely(kysely);
+                        
+                        // Haetaan oikea vastaus kyselyyn
+                        vastaus = db.lahetaKysely("SELECT tehtava.esim_vastaus FROM tehtava INNER JOIN kuuluu ON tehtava.id = kuuluu.tehtava_id INNER JOIN tehtavalista ON kuuluu.tehtavalista_id" +
+                            " = tehtavalista.id WHERE kuuluu.tehtavanro = " + i + " AND tehtavalista.id = " + tlNro + ";");
+                        vastaus.next();
+                        vastausKysely = vastaus.getString(1);
+                        vastaus = db.lahetaKysely(vastausKysely);
+
+                        // Verrataan käyttäjän kyselyn tulosta vastaukseen
+                        olikoOikein = db.vertaaTulokset(tulos, vastaus);
+                    }
+                    // Insert tai delete
+                    else{
+
+                        vastaus = db.lahetaKysely("SELECT tehtava.esim_vastaus FROM tehtava INNER JOIN kuuluu ON tehtava.id = kuuluu.tehtava_id INNER JOIN tehtavalista ON kuuluu.tehtavalista_id" +
+                            " = tehtavalista.id WHERE kuuluu.tehtavanro = " + i + " AND tehtavalista.id = " + tlNro + ";");
+                        vastaus.next();
+                        vastausKysely = vastaus.getString(1);
+                        // Verrataan käyttäjän kyselyn tulosta vastaukseen
+                        if(kysely.equals(vastausKysely)){
+                            olikoOikein = true;
+                            db.lahetaKasky(kysely);
+                        }
+                        else{
+                            olikoOikein = false;
+                        }
+                    }
+
+                    // Väärällä vastauksella toistetaan ja lisätään väärälaskuria...
+                    if(!olikoOikein){
+                        System.out.println("Vastauksesi oli väärin.");
+                        vaarin++;
+                        // Tulostetaan kanta näkyviin
+                        System.out.println("\nTietokannan rakenne:");
+                        esimkanta = db.haeEsimKanta();
+                        db.tulostaRs(esimkanta);
+                        System.out.println("");
+
+                        // Vääriä vastauksia on kolme, siirrytään seuraavaan
+                        if(vaarin == 3){
+                            listaSuoritettu = false;
+                            vaarin = 0;
+                            olikoOikein = false;
+                            System.out.println("Vastasit väärin kolmesti. Siirrytään seuraavaan tehtävään.\n");
+                            System.out.println("Oikea vastaus olisi ollut: " + vastausKysely);
+                            System.out.println();
+                            suoritettu = true;
+                        }
+                    //... ja oikealla vastauksella siirrytään seuraavaan ja nollataan väärät
+                    }else{
+                        System.out.println("Oikea vastaus. Siirrytään seuraavaan tehtävään.\n");
                         vaarin = 0;
-                        olikoOikein = false;
-                        System.out.println("Vastasit väärin kolmesti. Siirrytään seuraavaan tehtävään.\n");
-
-                        System.out.println("Oikea vastaus olisi ollut: " + vastausKysely);
-                        System.out.println();
+                        olikoOikein = true;
                         suoritettu = true;
                     }
-                //... ja oikealla vastauksella siirrytään seuraavaan ja nollataan väärät
-                }else{
-                    System.out.println("Oikea vastaus. Siirrytään seuraavaan tehtävään.\n");
-                    vaarin = 0;
-                    olikoOikein = true;
-                    suoritettu = true;
                 }
-                //Suljetaan resultSetit.
-                try {
-                    vastaus.close();
-                    tulos.close();
-                    tehtava.close();                
-                }
-                catch (SQLException e) {
-                    System.out.println("VIRHE!\n");
-                    e.printStackTrace();
-                }
+                // Merkitään suorituksen tiedot kantaan
+                loppuaika = db.haeAika();
+                lisaaTiedotKantaan(tlNro, i, sessioID, vaarin + 1, olikoOikein, alkuaika, loppuaika);
             }
-            // Merkitään suorituksen tiedot kantaan
-            loppuaika = db.haeAika();
-            lisaaTiedotKantaan(tlNro, i, sessioID, vaarin + 1, olikoOikein, alkuaika, loppuaika);
+            // Suljetaan resultSetit.
+            if(vastaus != null){
+                vastaus.close();
+            }
+            if(tulos != null){
+                tulos.close();
+            }
+            if(tehtava != null){
+                tehtava.close();
+            }
         }
+        catch (SQLException e) {
+            System.out.println("Tehtävän hakemisessa tapahtui virhe.");
+            e.printStackTrace();
+        }
+
         return listaSuoritettu;
     }
 
